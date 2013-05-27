@@ -1,18 +1,24 @@
 (ns cludoku.board)
 (require '[comb.template :as template])
 
-(defn col [board n] (map #(nth % n) board))
-(defn cols [board] (map #(col board %) (range (count (first board)))))
+(defn col [board-cells n] (map #(nth % n) board-cells))
+(defn cols [board-cells]
+  (map #(col board-cells %) (range (count (first board-cells)))))
 
-(defn well-formed? [board]
-  (let [dimensions (* (:block-height board) (:block-width board))]
-    (and (every? #(= (count %) dimensions) (:cells board))
-         (= (count (:cells board)) dimensions)
+(defn well-formed? [proto-board]
+  (let [dimensions (* (:block-height proto-board) (:block-width proto-board))]
+    (and (every? #(= (count %) dimensions) (:cells proto-board))
+         (= (count (:cells proto-board)) dimensions)
          (every? (fn [x] (every? #(or (nil? %)
                                      (and (>= % 1)
                                           (<= % dimensions)))
                                 x))
-                 (:cells board)))))
+                 (:cells proto-board)))))
+
+(defn create-board [proto-board]
+  (if (well-formed? proto-board)
+    proto-board
+    (throw (IllegalArgumentException. "Inconsistent board cells!"))))
 
 (defn consistent-sets? [numbers]
   (reduce (fn [acc val]
