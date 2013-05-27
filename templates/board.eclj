@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+        <html>
+          <head>
+            <title>Demisus' Sudoku HTML exporter</title>
+            <style>
+        .sudoku-board {
+          border-collapse: collapse;
+        }
+        .sudoku-row:first-child .sudoku-cell {
+          border-top: 1px solid;
+        }
+        .sudoku-row {
+          padding: 0;
+          margin: 0;
+        }
+        .sudoku-cell:first-child {
+          border-left: 1px solid;
+        }
+        <% (doseq [n (range (:block-height board) (dec (* (:block-height board) (:block-width board))) (:block-height board))] %>
+          .sudoku-row:nth-child(<%= n %>) .sudoku-cell {
+            border-bottom: 3px solid;
+          }
+        <% ) %>
+        <% (doseq [n (range (:block-width board) (dec (* (:block-height board) (:block-width board))) (:block-width board))] %>
+          .sudoku-cell:nth-child(<%= n %>) {
+            border-right: 3px solid;
+          }
+        <% ) %>
+        .sudoku-cell {
+          height: 50px;
+          width: 50px;
+          border-bottom: 1px solid;
+          border-right: 1px solid;
+          margin: 0;
+          vertical-align: middle;
+          text-align: center;
+          position: relative;
+          display: inline-block;
+        }
+        .sudoku-number {
+          font-size: 24pt;
+          color: #00f;
+          line-height: 50px;
+        }
+        .sudoku-candidate {
+          font-size: 10pt;
+          color: #888;
+          margin: 1px;
+        }
+
+        .sudoku-candidate-0 {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        .sudoku-candidate-1 {
+          position: absolute;
+          width: 50px;
+          text-align: center;
+          top: 0;
+        }
+        .sudoku-candidate-2 {
+          position: absolute;
+          right: 0%;
+          top: 0;
+        }
+        .sudoku-candidate-3 {
+          position: absolute;
+          left: 0;
+          line-height: 50px;
+        }
+        .sudoku-candidate-4 {
+          position: absolute;
+          width: 50px;
+          text-align: center;
+          line-height: 50px;
+        }
+        .sudoku-candidate-5 {
+          position: absolute;
+          right: 0%;
+          line-height: 50px;
+        }
+        .sudoku-candidate-6 {
+          position: absolute;
+          left: 0;
+          bottom: 0%;
+        }
+        .sudoku-candidate-7 {
+          position: absolute;
+          width: 50px;
+          text-align: center;
+          bottom: 0%;
+        }
+        .sudoku-candidate-8 {
+          position: absolute;
+          right: 0%;
+          bottom: 0%;
+        }
+            </style>
+          </head>
+          <body>
+<div class="sudoku-board">
+  <% (doseq [row (:cells board)] %>
+<div class="sudoku-row">
+      <% (doseq [candidates row]
+%><div class="sudoku-cell"><%
+             (if (= (count candidates) 1) 
+               (do
+          %><span class="sudoku-number"><%= (first candidates) %></span><%
+               )
+               (dotimes [i (count candidates)]
+                 (let [candidate-list (seq candidates)]
+            %><span
+                class="sudoku-candidate sudoku-candidate-<%= i %>"><%= (nth candidate-list i) %></span><% ))
+             ) %>
+</div><% )
+%></div><%
+     )
+%></div>
+          </body>
+        </html>

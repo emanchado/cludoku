@@ -1,4 +1,5 @@
 (ns cludoku.board)
+(require '[comb.template :as template])
 
 (defn col [board n] (map #(nth % n) board))
 (defn cols [board] (map #(col board %) (range (count (first board)))))
@@ -36,3 +37,6 @@
                                   (:cells board))]
       (= number-unknowns 0))
     (throw (IllegalStateException. "Inconsistent board!"))))
+
+(defn ^:export print-board [board]
+  (template/eval (slurp "templates/board.eclj") {:board board}))
