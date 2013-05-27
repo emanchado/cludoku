@@ -1,4 +1,5 @@
-(ns cludoku.solver)
+(ns cludoku.solver
+  (:use clojure.set))
 
 (defn fill-in-last-digits [row]
   (let [existing-numbers (set (remove nil? row))
