@@ -1,26 +1,36 @@
 (ns cludoku.solver
-  (:use clojure.set))
+  (:use clojure.set)
+  (:use cludoku.board))
 
-(defn fill-in-last-digits [row]
-  (let [existing-numbers (set (remove nil? row))
-        row-size (count existing-numbers)
-        possible-numbers (set (range 1 (inc row-size)))]
-    (if (= row-size (dec (count row)))
+(defn fill-in-last-digits [cell-set]
+  (let [existing-numbers (set (map first (filter #(= (count %) 1)
+                                                 (map second cell-set))))
+        possible-numbers (set (range 1 (inc (count cell-set))))]
+    (if (= (count existing-numbers)
+           (dec (count cell-set)))
       (let [missing-number (first (clojure.set/difference possible-numbers
-                                                          existing-numbers))]
-        (map #(if (nil? %) missing-number %) row))
-      row)))
+                                                          existing-numbers))
+            unsolved-cell-coords (ffirst (filter #(not= (count (second %)) 1)
+                                                 cell-set))]
+        [unsolved-cell-coords #{missing-number}]))))
 
 (defn ^:export solve-step [board]
-  (conj board
-        {:cells (map fill-in-last-digits
-                     (:cells board))}))
+  (let [updates (reduce
+                 (fn [acc number]
+                   (merge acc
+                          (fill-in-last-digits (board-row board number))
+                          (fill-in-last-digits (board-col board number))
+                          (fill-in-last-digits (board-block board number))))
+                 {}
+                 (range (dim board)))]
+    (conj board
+          {:cells (merge (:cells board) updates)})))
 
 (defn ^:export remove-doubles [cell-set]
   (let [possible-repeated-pair
-        (first (first (filter #(= (nth % 1) 2)
-                              (frequencies ((group-by #(count %)
-                                                      (vals cell-set)) 2)))))]
+        (ffirst (filter #(= (nth % 1) 2)
+                        (frequencies ((group-by #(count %)
+                                                (vals cell-set)) 2))))]
     (if possible-repeated-pair
       (into {} (map (fn [cell-pair] [(first cell-pair)
                                     (if (= (second cell-pair)

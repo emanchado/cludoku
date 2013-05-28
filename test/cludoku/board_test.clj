@@ -2,7 +2,7 @@
   (:use clojure.test
         cludoku.board))
 
-(deftest board
+(deftest board-creation
   (testing "Considers a board with an oversized row malformed"
     (is (thrown? IllegalArgumentException
                  (create-board {:block-height 2
@@ -29,8 +29,53 @@
                                 :cells [[nil 1 nil nil]
                                         [2 3 nil nil]
                                         [1 nil nil nil]
-                                        [nil nil 5 nil]]}))))
+                                        [nil nil 5 nil]]})))))
 
+(deftest board-parts
+  (testing "Can return an arbitrary row of a board"
+    (is (= (board-row (create-board {:block-height 2
+                                     :block-width 2
+                                     :cells [[nil 1   2   3]
+                                             [2   3   1   4]
+                                             [1   nil nil 2]
+                                             [3   2   4   1]]})
+                      2)
+           {[2 0] #{1} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{2}})))
+
+  (testing "Can return an arbitrary column of a board"
+    (is (= (board-col (create-board {:block-height 2
+                                     :block-width 2
+                                     :cells [[nil 1   2   3]
+                                             [2   3   1   4]
+                                             [1   nil nil 2]
+                                             [3   2   4   1]]})
+                      2)
+           {[0 2] #{2} [1 2] #{1} [2 2] #{1 2 3 4} [3 2] #{4}})))
+
+  (testing "Can return an arbitrary block of a board"
+    (is (= (board-block (create-board {:block-height 2
+                                       :block-width 2
+                                       :cells [[nil 1   2   3]
+                                               [2   3   1   4]
+                                               [1   nil nil 2]
+                                               [3   2   4   1]]})
+                        2)
+           {[2 0] #{1} [2 1] #{1 2 3 4} [3 0] #{3} [3 1] #{2}})))
+
+  (testing "Can return the last block of a board"
+    (is (= (board-block (create-board {:block-height 2
+                                       :block-width 3
+                                       :cells [[nil  4   6  nil nil  2 ]
+                                               [nil nil nil  1  nil nil]
+                                               [ 3  nil nil nil nil nil]
+                                               [nil nil nil  4  nil nil]
+                                               [ 3  nil nil nil  1  nil]
+                                               [ 4   1  nil nil  2   3 ]]})
+                        5)
+        {[4 3] #{1 2 3 4 5 6} [4 4] #{1} [4 5] #{1 2 3 4 5 6}
+         [5 3] #{1 2 3 4 5 6} [5 4] #{2} [5 5] #{3}}))))
+
+(deftest board-solved
   (testing "Considers a board with a nil unsolved"
     (is (not (solved? (create-board {:block-height 2
                                      :block-width 2
