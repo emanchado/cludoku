@@ -5,8 +5,14 @@
 
 (defn -main
   [& args]
-  (prn "OH HAI Cludoku")
-  (with-open [w (clojure.java.io/writer "sudoku-0.html")]
-    (.write w (print-board {:cells [[#{1 2 3} #{3 4} #{4 2}]]
-                            :block-width 3
-                            :block-height 3}))))
+  (let [b {:block-height 2
+           :block-width 2
+           :cells [[nil 1 2 3]
+                   [nil nil nil 1]
+                   [nil 2 nil 4]
+                   [nil nil nil 2]]}
+        board (create-board b)]
+    (loop [cnt 0
+           brd board]
+      (with-open [w (clojure.java.io/writer (str "sudoku-" cnt ".html"))]
+        (.write w (print-board brd))))))

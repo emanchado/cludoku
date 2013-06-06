@@ -100,9 +100,12 @@
           </head>
           <body>
 <div class="sudoku-board">
-  <% (doseq [row (:cells board)] %>
+  <% (let [index-range (range (* (:block-height board)
+                                 (:block-width board)))]
+       (doseq [nrow index-range] %>
 <div class="sudoku-row">
-      <% (doseq [candidates row]
+      <% (doseq [ncol index-range]
+           (let [candidates (second (find (:cells board) [nrow ncol]))]
 %><div class="sudoku-cell"><%
              (if (= (count candidates) 1) 
                (do
@@ -112,10 +115,10 @@
                  (let [candidate-list (seq candidates)]
             %><span
                 class="sudoku-candidate sudoku-candidate-<%= i %>"><%= (nth candidate-list i) %></span><% ))
-             ) %>
+             )) %>
 </div><% )
 %></div><%
-     )
+     ))
 %></div>
           </body>
         </html>
