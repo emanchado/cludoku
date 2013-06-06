@@ -100,3 +100,17 @@
 
 (defn ^:export print-board [board]
   (template/eval (slurp "templates/board.eclj") {:board board}))
+
+(defn ^:export export-board [board]
+  (let [index-range (range (* (:block-height board)
+                              (:block-width board)))]
+    (merge board
+           {:cells (vec (map (fn [nrow]
+                               (vec (map (fn [ncol]
+                                           (let [cell-contents
+                                                 (second (find (:cells board)
+                                                               [nrow ncol]))]
+                                             (if (= (count cell-contents) 1)
+                                               (first cell-contents) nil)))
+                                         index-range)))
+                             index-range))})))

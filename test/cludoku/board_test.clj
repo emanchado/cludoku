@@ -31,6 +31,16 @@
                                         [1 nil nil nil]
                                         [nil nil 5 nil]]})))))
 
+(deftest board-export
+  (testing "Can export a board"
+    (def board-def {:block-height 2
+                    :block-width 2
+                    :cells [[nil 1 2 3]
+                            [nil nil nil 1]
+                            [nil 2 nil 4]
+                            [nil nil nil 2]]})
+    (is (export-board (create-board board-def)) board-def)))
+
 (deftest board-parts
   (testing "Can return an arbitrary row of a board"
     (is (= (board-row (create-board {:block-height 2
