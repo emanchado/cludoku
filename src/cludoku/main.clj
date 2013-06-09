@@ -5,14 +5,22 @@
 
 (defn -main
   [& args]
-  (let [b {:block-height 2
-           :block-width 2
-           :cells [[nil 1 2 3]
-                   [nil nil nil 1]
-                   [nil 2 nil 4]
-                   [nil nil nil 2]]}
-        board (create-board b)]
+  (let [b (import-board (first args))
+        initial-board (create-board b)
+        rules cludoku.solver/rules]
     (loop [cnt 0
-           brd board]
-      (with-open [w (clojure.java.io/writer (str "sudoku-" cnt ".html"))]
-        (.write w (print-board brd))))))
+           board initial-board]
+      (let [new-state
+            (reduce (fn [acc rule]
+                      (let [acc-board (merge board {:cells acc})
+                            update (rule acc-board)]
+                        (prn (export-board acc-board))
+                        (with-open [w (clojure.java.io/writer (str "sudoku-" cnt ".html"))]
+                          (.write w (print-board board)))
+                        (merge acc update)))
+                    (:cells board)
+                    rules)]
+        (if (and (not (solved? board))
+                 (not= (:cells board) new-state))
+          (recur (inc cnt)
+                 (merge board {:cells new-state})))))))

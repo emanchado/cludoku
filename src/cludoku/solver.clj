@@ -29,3 +29,21 @@
                     (filter #(and (some possible-repeated-pair (second %))
                                   (not= possible-repeated-pair (second %))) cell-set)))
       {})))
+
+(defn region-rule [f]
+  (fn [board]
+    (let [dim (dim board)
+          row-updates (reduce (fn [acc i] (merge acc (f (board-row board i))))
+                              {}
+                              (range dim))
+          col-updates (reduce (fn [acc i] (merge acc (f (board-col board i))))
+                              {}
+                              (range dim))
+          block-updates (reduce (fn [acc i]
+                                  (merge acc (f (board-block board i))))
+                                {}
+                                (range dim))]
+      (merge row-updates col-updates block-updates))))
+
+(def rules [(region-rule remove-final-numbers)
+            (region-rule remove-doubles)])
