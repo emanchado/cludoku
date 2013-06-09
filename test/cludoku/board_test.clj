@@ -31,7 +31,36 @@
                                         [1 nil nil nil]
                                         [nil nil 5 nil]]})))))
 
-(deftest board-export
+(deftest board-import-export
+  (testing "Can import a simple board definition"
+    (is (= (import-board "test/fixtures/simple.board")
+           {:block-height 2
+            :block-width 2
+            :cells [[nil 1 2 3]
+                    [nil nil nil 1]
+                    [nil 2 nil 4]
+                    [nil nil nil 2]]})))
+
+  (testing "Can import a solved board definition"
+    (is (= (import-board "test/fixtures/solved.board")
+           {:block-height 2
+            :block-width 2
+            :cells [[4 1 2 3]
+                    [2 3 4 1]
+                    [1 2 3 4]
+                    [3 4 1 2]]})))
+
+  (testing "Can import an uneven-block-shape board definition"
+    (is (= (import-board "test/fixtures/uneven.board")
+           {:block-height 2
+            :block-width 3
+            :cells [[nil  6   4   3   2  nil]
+                    [ 5   3  nil nil  6   4 ]
+                    [ 4  nil nil nil nil  1 ]
+                    [ 3  nil nil nil nil  2 ]
+                    [ 6   4  nil nil  1   3 ]
+                    [nil  1   3   4   5  nil]]})))
+
   (testing "Can export a board"
     (def board-def {:block-height 2
                     :block-width 2
