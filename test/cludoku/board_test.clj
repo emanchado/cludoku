@@ -157,6 +157,15 @@
                                                  [nil  2  4 3]
                                                  [nil nil 2 1]]})))))
 
+  (testing "Throws exception boards with repeated numbers in blocks"
+    (is (thrown? IllegalStateException
+                 (solved? (create-board {:block-height 2
+                                         :block-width 2
+                                         :cells [[ 1   2  3 nil]
+                                                 [ 2   1  4 nil]
+                                                 [nil nil 1 nil]
+                                                 [nil nil 2 nil]]})))))
+
   (testing "Throws exception on finished board with repeated columns"
     (is (thrown? IllegalStateException
                  (solved? (create-board {:block-height 2

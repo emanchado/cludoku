@@ -57,34 +57,21 @@
                      (range dim))]))
     (throw (IllegalArgumentException. "Inconsistent board cells!"))))
 
-(defn consistent-sets? [numbers]
-  (reduce (fn [acc val]
-            (let [numbers (remove nil? val)]
-              (and acc
-                   (or (empty? numbers)
-                       (apply distinct? numbers)))))
-          true
-          numbers))
+(defn consistent-sets? [board set-function]
+  (every?
+   (fn [n]
+     (let [final-numbers (map #(first %)
+                              (filter #(= (count %) 1)
+                                      (map #(second %)
+                                           (set-function board n))))]
+       (or (empty? final-numbers)
+           (apply distinct? final-numbers))))
+   (range (dim board))))
 
 (defn consistent? [board]
-  (and (every?
-        (fn [row-n]
-          (let [final-numbers (map #(first %)
-                                   (filter #(= (count %) 1)
-                                           (map #(second %)
-                                                (board-row board row-n))))]
-            (or (empty? final-numbers)
-                (apply distinct? final-numbers))))
-        (range (dim board)))
-       (every?
-        (fn [col-n]
-          (let [final-numbers (map #(first %)
-                                   (filter #(= (count %) 1)
-                                           (map #(second %)
-                                                (board-col board col-n))))]
-            (or (empty? final-numbers)
-                (apply distinct? final-numbers))))
-        (range (dim board)))))
+  (and (consistent-sets? board board-row)
+       (consistent-sets? board board-col)
+       (consistent-sets? board board-block)))
 
 (defn ^:export solved? [board]
   (if (consistent? board)
