@@ -119,9 +119,9 @@
     (is (not (solved? (create-board {:block-height 2
                                      :block-width 2
                                      :cells [[nil 1 2 3]
-                                             [2   3 1 4]
-                                             [1   4 3 2]
-                                             [3   2 4 1]]})))))
+                                             [ 2  3 1 4]
+                                             [ 1  4 3 2]
+                                             [ 3  2 4 1]]})))))
 
   (testing "Considers a board with no nils solved"
     (is (solved? (create-board {:block-height 2
@@ -134,36 +134,36 @@
   (testing "Considers a board with many nils not solved (but consistent)"
     (is (not (solved? (create-board {:block-height 2
                                      :block-width 2
-                                     :cells [[2   nil 3 4]
+                                     :cells [[ 2  nil 3 4]
                                              [nil nil 1 2]
-                                             [3   4   2 1]
-                                             [1   2   4 3]]})))))
+                                             [ 3   4  2 1]
+                                             [ 1   2  4 3]]})))))
 
-  (testing "Throws exception boards with repeated columns"
+  (testing "Throws exception boards with repeated numbers in columns"
     (is (thrown? IllegalStateException
                  (solved? (create-board {:block-height 2
                                          :block-width 2
-                                         :cells  [[1   2   3   4]
-                                                  [1   nil nil nil]
+                                         :cells  [[ 1   2   3   4 ]
+                                                  [ 1  nil nil nil]
                                                   [nil nil nil nil]
                                                   [nil nil nil nil]]})))))
 
-  (testing "Throws exception boards with repeated rows"
+  (testing "Throws exception boards with repeated numbers in rows"
     (is (thrown? IllegalStateException
                  (solved? (create-board {:block-height 2
                                          :block-width 2
-                                         :cells [[1   1   3 4]
-                                                 [3   nil 1 2]
-                                                 [nil 2   4 3]
+                                         :cells [[ 1   1  3 4]
+                                                 [ 3  nil 1 2]
+                                                 [nil  2  4 3]
                                                  [nil nil 2 1]]})))))
 
   (testing "Throws exception on finished board with repeated columns"
     (is (thrown? IllegalStateException
                  (solved? (create-board {:block-height 2
                                          :block-width 2
-                                         :cells [[1 2   3 4]
+                                         :cells [[1  2  3 4]
                                                  [1 nil 2 nil]
-                                                 [2 3   4 1]
+                                                 [2  3  4 1]
                                                  [4 nil 1 3]]})))))
 
   (testing "Throws exception on finished board with repeated rows"
@@ -171,7 +171,7 @@
                  (solved? (create-board {:block-height 2
                                          :block-width 2
                                          :cells [[1 nil nil nil]
-                                                 [2 2   nil nil]
+                                                 [2  2  nil nil]
                                                  [3 nil nil nil]
                                                  [4 nil nil nil]]})))))
 
