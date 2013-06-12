@@ -30,6 +30,25 @@
                                   (not= possible-repeated-pair (second %))) cell-set)))
       {})))
 
+(defn single-cell-candidate [cell-set]
+  (let [unsolved-cells (remove (fn [[a b]] (= (count b) 1)) cell-set)
+        unsolved-cands (reduce (fn [acc [pos b]]
+                                 (conj acc
+                                       (reduce
+                                        (fn [acc2 cand]
+                                          (conj acc2
+                                                [cand (conj (get acc cand ())
+                                                            pos)]))
+                                        {}
+                                        b)))
+                               {}
+                               unsolved-cells)]
+    (reduce (fn [acc [cand pos-list]]
+              (conj acc [(first pos-list) #{cand}]))
+            {}
+            (remove (fn [[cand pos-list]] (not= (count pos-list) 1))
+                    unsolved-cands))))
+
 (defn region-rule [f]
   (fn [board]
     (let [dim (dim board)
@@ -46,4 +65,5 @@
       (merge row-updates col-updates block-updates))))
 
 (def rules [(region-rule remove-final-numbers)
-            (region-rule remove-doubles)])
+            (region-rule remove-doubles)
+            (region-rule single-cell-candidate)])
