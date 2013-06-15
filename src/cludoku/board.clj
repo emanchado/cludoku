@@ -23,6 +23,12 @@
                             (<= (second (first %)) last-col))
                       (:cells board)))))
 
+(defn block-for-cell [board cell-pos]
+  (let [block-row (quot (first cell-pos) (:block-height board))
+        block-col (quot (second cell-pos) (:block-width board))
+        block-number (+ (* (:block-height board) block-row) block-col)]
+    (board-block board block-number)))
+
 (defn well-formed? [proto-board]
   (let [dimensions (* (:block-height proto-board) (:block-width proto-board))]
     (and (every? #(= (count %) dimensions) (:cells proto-board))

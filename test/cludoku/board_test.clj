@@ -112,7 +112,32 @@
                                                [ 4   1  nil nil  2   3 ]]})
                         5)
         {[4 3] #{1 2 3 4 5 6} [4 4] #{1} [4 5] #{1 2 3 4 5 6}
-         [5 3] #{1 2 3 4 5 6} [5 4] #{2} [5 5] #{3}}))))
+         [5 3] #{1 2 3 4 5 6} [5 4] #{2} [5 5] #{3}})))
+
+  (testing "Can return the block a cell belongs to"
+    (def board (create-board {:block-height 2
+                              :block-width 3
+                              :cells [[nil  4   6  nil nil  2 ]
+                                      [nil nil nil  1  nil nil]
+                                      [ 3  nil nil nil nil nil]
+                                      [nil nil nil  4  nil nil]
+                                      [ 3  nil nil nil  1  nil]
+                                      [ 4   1  nil nil  2   3 ]]}))
+    (is (= (block-for-cell board [2 3])
+           {[2 3] #{1 2 3 4 5 6}
+            [2 4] #{1 2 3 4 5 6}
+            [2 5] #{1 2 3 4 5 6}
+            [3 3] #{4}
+            [3 4] #{1 2 3 4 5 6}
+            [3 5] #{1 2 3 4 5 6}}))
+
+    (is (= (block-for-cell board [4 1])
+           {[4 0] #{3}
+            [4 1] #{1 2 3 4 5 6}
+            [4 2] #{1 2 3 4 5 6}
+            [5 0] #{4}
+            [5 1] #{1}
+            [5 2] #{1 2 3 4 5 6}}))))
 
 (deftest board-solved
   (testing "Considers a board with a nil unsolved"
