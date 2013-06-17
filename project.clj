@@ -5,4 +5,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.4.0"]]
   :source_paths ["src"]
+  :test-selectors {:default (fn [_] true)
+                   :focus :focus}
   :main cludoku.main)
