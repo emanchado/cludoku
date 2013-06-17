@@ -10,17 +10,16 @@
         rules cludoku.solver/rules]
     (loop [cnt 0
            board initial-board]
-      (let [new-state
-            (reduce (fn [acc rule]
-                      (let [acc-board (merge board {:cells acc})
-                            update (rule acc-board)]
+      (let [new-board
+            (reduce (fn [acc-board rule]
+                      (let [update (rule acc-board)]
                         (prn (export-board acc-board))
                         (with-open [w (clojure.java.io/writer (str "sudoku-" cnt ".html"))]
                           (.write w (print-board board)))
-                        (merge acc update)))
-                    (:cells board)
+                        (board-update acc-board update)))
+                    board
                     rules)]
-        (if (and (not (solved? board))
-                 (not= (:cells board) new-state))
+        (if (and (not (solved? new-board))
+                 (not= board new-board))
           (recur (inc cnt)
-                 (merge board {:cells new-state})))))))
+                 new-board))))))

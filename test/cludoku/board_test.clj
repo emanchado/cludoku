@@ -70,49 +70,95 @@
                             [nil nil nil 2]]})
     (is (export-board (create-board board-def)) board-def)))
 
+(deftest board-cleanup
+  (testing "Can cleanup a single candidate"
+    (let [raw-board {:block-height 2
+                     :block-width 2
+                     :cells {[0 0] #{1}       [0 1] #{1 2 3 4} [0 2] #{1 2 3 4} [0 3] #{1 2 3 4}
+                             [1 0] #{1 2 3 4} [1 1] #{1 2 3 4} [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
+                             [2 0] #{1 2 3 4} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{1 2 3 4}
+                             [3 0] #{1 2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}}}]
+      (is (= (:cells (remove-final-numbers raw-board
+                                           (filter (fn [[_ cands]]
+                                                     (= (count cands) 1))
+                                                   (:cells raw-board))))
+             {[0 0] #{1}     [0 1] #{2 3 4}   [0 2] #{2 3 4}   [0 3] #{2 3 4}
+              [1 0] #{2 3 4} [1 1] #{2 3 4}   [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
+              [2 0] #{2 3 4} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{1 2 3 4}
+              [3 0] #{2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}}))))
+
+  (testing "Can cleanup two candidates with common to-clean-up cells"
+    (let [raw-board {:block-height 2
+                     :block-width 2
+                     :cells {[0 0] #{1}       [0 1] #{1 2 3 4} [0 2] #{1 2 3 4} [0 3] #{1 2 3 4}
+                             [1 0] #{1 2 3 4} [1 1] #{1 2 3 4} [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
+                             [2 0] #{1 2 3 4} [2 1] #{1 2 3 4} [2 2] #{2}       [2 3] #{1 2 3 4}
+                             [3 0] #{1 2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}}}]
+      (is (= {}
+             (cell-set-diff (:cells (remove-final-numbers raw-board
+                                                          (filter (fn [[_ cands]]
+                                                                    (= (count cands) 1))
+                                                                  (:cells raw-board))))
+                            {[0 0] #{1}     [0 1] #{2 3 4}   [0 2] #{3 4}   [0 3] #{2 3 4}
+                             [1 0] #{2 3 4} [1 1] #{2 3 4}   [1 2] #{1 3 4} [1 3] #{1 2 3 4}
+                             [2 0] #{3 4}   [2 1] #{1 3 4}   [2 2] #{2}     [2 3] #{1 3 4}
+                             [3 0] #{2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 3 4} [3 3] #{1 3 4}})))))
+
+  (testing "Newly created boards have clean candidates"
+    (is (= (:cells (create-board {:block-height 2
+                                  :block-width 2
+                                  :cells [[ 1  nil nil nil]
+                                          [nil nil nil nil]
+                                          [nil nil nil nil]
+                                          [nil nil nil nil]]}))
+           {[0 0] #{1}     [0 1] #{2 3 4}   [0 2] #{2 3 4}   [0 3] #{2 3 4}
+            [1 0] #{2 3 4} [1 1] #{2 3 4}   [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
+            [2 0] #{2 3 4} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{1 2 3 4}
+            [3 0] #{2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}}))))
+
 (deftest board-parts
   (testing "Can return an arbitrary row of a board"
-    (is (= (board-row (create-board {:block-height 2
-                                     :block-width 2
-                                     :cells [[nil 1   2   3]
-                                             [2   3   1   4]
-                                             [1   nil nil 2]
-                                             [3   2   4   1]]})
-                      2)
-           {[2 0] #{1} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{2}})))
+    (is (= (set (keys (board-row (create-board {:block-height 2
+                                                :block-width 2
+                                                :cells [[nil  1   2   3 ]
+                                                        [ 2   3   1   4 ]
+                                                        [ 1  nil nil  2 ]
+                                                        [ 3  nil nil  1 ]]})
+                                 2)))
+           #{[2 0] [2 1] [2 2] [2 3]})))
 
   (testing "Can return an arbitrary column of a board"
-    (is (= (board-col (create-board {:block-height 2
-                                     :block-width 2
-                                     :cells [[nil 1   2   3]
-                                             [2   3   1   4]
-                                             [1   nil nil 2]
-                                             [3   2   4   1]]})
-                      2)
-           {[0 2] #{2} [1 2] #{1} [2 2] #{1 2 3 4} [3 2] #{4}})))
+    (is (= (set (keys (board-col (create-board {:block-height 2
+                                                :block-width 2
+                                                :cells [[nil  1   2  nil]
+                                                        [ 2   3  nil  4 ]
+                                                        [ 1  nil nil nil]
+                                                        [ 3   2   4   1 ]]})
+                                 2)))
+           #{[0 2] [1 2] [2 2] [3 2]})))
 
   (testing "Can return an arbitrary block of a board"
-    (is (= (board-block (create-board {:block-height 2
-                                       :block-width 2
-                                       :cells [[nil 1   2   3]
-                                               [2   3   1   4]
-                                               [1   nil nil 2]
-                                               [3   2   4   1]]})
-                        2)
-           {[2 0] #{1} [2 1] #{1 2 3 4} [3 0] #{3} [3 1] #{2}})))
+    (is (= (set (keys (board-block (create-board {:block-height 2
+                                                  :block-width 2
+                                                  :cells [[nil  1   2   3 ]
+                                                          [ 2   3   1   4 ]
+                                                          [ 1  nil nil  2 ]
+                                                          [ 3  nil  4   1 ]]})
+                                   2)))
+           #{[2 0] [2 1] [3 0] [3 1]})))
 
   (testing "Can return the last block of a board"
-    (is (= (board-block (create-board {:block-height 2
-                                       :block-width 3
-                                       :cells [[nil  4   6  nil nil  2 ]
-                                               [nil nil nil  1  nil nil]
-                                               [ 3  nil nil nil nil nil]
-                                               [nil nil nil  4  nil nil]
-                                               [ 3  nil nil nil  1  nil]
-                                               [ 4   1  nil nil  2   3 ]]})
-                        5)
-        {[4 3] #{1 2 3 4 5 6} [4 4] #{1} [4 5] #{1 2 3 4 5 6}
-         [5 3] #{1 2 3 4 5 6} [5 4] #{2} [5 5] #{3}})))
+    (is (= (set (keys (board-block
+                       (create-board {:block-height 2
+                                      :block-width 3
+                                      :cells [[nil  4   6  nil nil  2 ]
+                                              [nil nil nil  1  nil nil]
+                                              [ 3  nil nil nil nil nil]
+                                              [nil nil nil  4  nil nil]
+                                              [ 3  nil nil nil  1  nil]
+                                              [ 4   1  nil nil  2   3 ]]})
+                                   5)))
+        #{[4 3] [4 4] [4 5] [5 3] [5 4] [5 5]})))
 
   (testing "Can return the block a cell belongs to"
     (def board (create-board {:block-height 2
@@ -123,31 +169,40 @@
                                       [nil nil nil  4  nil nil]
                                       [ 3  nil nil nil  1  nil]
                                       [ 4   1  nil nil  2   3 ]]}))
-    (is (= (block-for-cell board [2 3])
-           {[2 3] #{1 2 3 4 5 6}
-            [2 4] #{1 2 3 4 5 6}
-            [2 5] #{1 2 3 4 5 6}
-            [3 3] #{4}
-            [3 4] #{1 2 3 4 5 6}
-            [3 5] #{1 2 3 4 5 6}}))
+    (is (= (set (keys (block-for-cell board [2 3])))
+           #{[2 3] [2 4] [2 5] [3 3] [3 4] [3 5]}))
 
-    (is (= (block-for-cell board [4 1])
-           {[4 0] #{3}
-            [4 1] #{1 2 3 4 5 6}
-            [4 2] #{1 2 3 4 5 6}
-            [5 0] #{4}
-            [5 1] #{1}
-            [5 2] #{1 2 3 4 5 6}}))))
+    (is (= (set (keys (block-for-cell board [4 1])))
+           #{[4 0] [4 1] [4 2] [5 0] [5 1] [5 2]}))))
+
+(deftest board-update-algorithm
+  (testing "Can apply a simple update to an empty board"
+    (is (= (:cells (board-update (create-board {:block-height 2
+                                                :block-width 2
+                                                :cells [[nil nil nil nil]
+                                                        [nil nil nil nil]
+                                                        [nil nil nil nil]
+                                                        [nil nil nil nil]]})
+                                 {[0 0] #{1}}))
+           {[0 0] #{1}     [0 1] #{2 3 4}   [0 2] #{2 3 4}   [0 3] #{2 3 4}
+            [1 0] #{2 3 4} [1 1] #{2 3 4}   [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
+            [2 0] #{2 3 4} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{1 2 3 4}
+            [3 0] #{2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}})))
+
+  (testing "Cleans up candidates recursively"
+    (is (= (:cells (board-update {:block-height 2
+                                  :block-width 2
+                                  :cells {[0 0] #{1}       [0 1] #{1 2 3 4} [0 2] #{1 2 3 4} [0 3] #{1 2 3 4}
+                                          [1 0] #{1 2 3 4} [1 1] #{1 2}     [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
+                                          [2 0] #{1 2 3 4} [2 1] #{1 2 3 4} [2 2] #{1 2 3 4} [2 3] #{1 2 3 4}
+                                          [3 0] #{1 2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}}}
+                                 {[0 0] #{1}}))
+           {[0 0] #{1}     [0 1] #{3 4}   [0 2] #{2 3 4}   [0 3] #{2 3 4}
+            [1 0] #{3 4}   [1 1] #{2}     [1 2] #{1 3 4}   [1 3] #{1 3 4}
+            [2 0] #{2 3 4} [2 1] #{1 3 4} [2 2] #{1 2 3 4} [2 3] #{1 2 3 4}
+            [3 0] #{2 3 4} [3 1] #{1 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}}))))
 
 (deftest board-solved
-  (testing "Considers a board with a nil unsolved"
-    (is (not (solved? (create-board {:block-height 2
-                                     :block-width 2
-                                     :cells [[nil 1 2 3]
-                                             [ 2  3 1 4]
-                                             [ 1  4 3 2]
-                                             [ 3  2 4 1]]})))))
-
   (testing "Considers a board with no nils solved"
     (is (solved? (create-board {:block-height 2
                                 :block-width 2
@@ -156,13 +211,13 @@
                                         [3 4 2 1]
                                         [1 2 4 3]]}))))
 
-  (testing "Considers a board with many nils not solved (but consistent)"
+  (testing "Considers a board with nils not solved (but consistent)"
     (is (not (solved? (create-board {:block-height 2
                                      :block-width 2
-                                     :cells [[ 2  nil 3 4]
-                                             [nil nil 1 2]
-                                             [ 3   4  2 1]
-                                             [ 1   2  4 3]]})))))
+                                     :cells [[ 2  nil nil  4 ]
+                                             [nil nil nil  2 ]
+                                             [ 3   4   2   1 ]
+                                             [ 1   2   4   3 ]]})))))
 
   (testing "Throws exception boards with repeated numbers in columns"
     (is (thrown? IllegalStateException

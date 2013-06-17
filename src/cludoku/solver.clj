@@ -2,18 +2,6 @@
   (:use clojure.set)
   (:use cludoku.board))
 
-(defn remove-final-numbers [cell-set]
-  (let [existing-numbers (set (map first (filter #(= (count %) 1)
-                                                 (map second cell-set))))]
-    (into {} (map (fn [cell]
-                    [(first cell)
-                     (set (remove existing-numbers (second cell)))])
-                  (filter (fn [cell]
-                            (and (some #(contains? (second cell) %)
-                                       existing-numbers)
-                                 (> (count (second cell)) 1)))
-                          cell-set)))))
-
 (defn remove-doubles [cell-set]
   (let [possible-repeated-pair
         (ffirst (filter #(= (nth % 1) 2)
@@ -64,6 +52,5 @@
                                 (range dim))]
       (merge row-updates col-updates block-updates))))
 
-(def rules [(region-rule remove-final-numbers)
-            (region-rule remove-doubles)
+(def rules [(region-rule remove-doubles)
             (region-rule single-cell-candidate)])

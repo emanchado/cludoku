@@ -23,11 +23,21 @@
                             (<= (second (first %)) last-col))
                       (:cells board)))))
 
-(defn block-for-cell [board cell-pos]
-  (let [block-row (quot (first cell-pos) (:block-height board))
-        block-col (quot (second cell-pos) (:block-width board))
+(defn block-for-cell [board [row-n col-n]]
+  (let [block-row (quot row-n (:block-height board))
+        block-col (quot col-n (:block-width board))
         block-number (+ (* (:block-height board) block-row) block-col)]
     (board-block board block-number)))
+
+(defn cell-set-diff [cell-set1 cell-set2]
+  (reduce (fn [acc coord]
+            (let [cands1 (get cell-set1 coord)
+                  cands2 (get cell-set2 coord)]
+              (if (not= cands1 cands2)
+                (into acc {coord [cands1 cands2]})
+                acc)))
+          {}
+          (keys cell-set1)))
 
 (defn well-formed? [proto-board]
   (let [dimensions (* (:block-height proto-board) (:block-width proto-board))]
@@ -39,28 +49,73 @@
                                 x))
                  (:cells proto-board)))))
 
+(defn remove-candidate [number cell-set]
+  (let [result (reduce (fn [update [cell-pos cell-cands]]
+                         (into update (if (and (> (count cell-cands) 1)
+                                               (contains? cell-cands number))
+                                        [[cell-pos (set (remove #(= number %)
+                                                                cell-cands))]])))
+                       {}
+                       cell-set)]
+    result))
+
+(defn remove-final-numbers [board new-final-numbers]
+  (let [update
+        (reduce (fn [acc-cells final-number]
+                  (let [[pos one-element-set] final-number
+                        number (first one-element-set)
+                        acc-board (merge board {:cells (merge (:cells board)
+                                                              acc-cells)})
+                        row-wo-final (remove-candidate
+                                      number
+                                      (board-row acc-board (first pos)))
+                        col-wo-final (remove-candidate
+                                      number
+                                      (board-col acc-board (second pos)))
+                        block-wo-final (remove-candidate
+                                        number
+                                        (block-for-cell acc-board pos))]
+                    (merge acc-cells
+                           row-wo-final
+                           col-wo-final
+                           block-wo-final)))
+                {}
+                new-final-numbers)
+        updated-board (merge board {:cells (merge (:cells board) update)})
+        new-finals (filter (fn [[_ new-cand-set]]
+                             (= (count new-cand-set) 1))
+                           update)]
+    (if (> (count new-finals) 0)
+      (remove-final-numbers updated-board new-finals)
+      updated-board)))
+
 (defn create-board [proto-board]
   (if (well-formed? proto-board)
     (let [dim (* (:block-height proto-board)
                  (:block-width  proto-board))
-          cells (:cells proto-board)]
-      (conj proto-board
-            [:cells (reduce
-                     (fn [row-acc x]
-                       (merge row-acc
-                              (reduce
-                               (fn [col-acc y]
-                                 (let [number (nth (nth cells x) y)]
-                                   (merge col-acc
-                                       [[x y]
-                                        (if (nil? number)
-                                          (set (map #(+ % 1)
-                                                    (range dim)))
-                                          #{number})])))
-                               {}
-                               (range dim))))
-                     {}
-                     (range dim))]))
+          cells (:cells proto-board)
+          raw-board (conj proto-board
+                          [:cells
+                           (reduce
+                            (fn [row-acc x]
+                              (merge row-acc
+                                     (reduce
+                                      (fn [col-acc y]
+                                        (let [number (nth (nth cells x) y)]
+                                          (merge col-acc
+                                                 [[x y]
+                                                  (if (nil? number)
+                                                    (set (map #(+ % 1)
+                                                              (range dim)))
+                                                    #{number})])))
+                                      {}
+                                      (range dim))))
+                            {}
+                            (range dim))])]
+      (remove-final-numbers raw-board
+                            (filter (fn [[pos cands]]
+                                      (= (count cands) 1))
+                                    (:cells raw-board))))
     (throw (IllegalArgumentException. "Inconsistent board cells!"))))
 
 (defn consistent-sets? [board set-function]
@@ -78,6 +133,12 @@
   (and (consistent-sets? board board-row)
        (consistent-sets? board board-col)
        (consistent-sets? board board-block)))
+
+(defn board-update [board update]
+  (let [final-numbers (filter #(= (count (second %)) 1)
+                              update)
+        updated-board (merge board {:cells (merge (:cells board) update)})]
+    (remove-final-numbers updated-board final-numbers)))
 
 (defn ^:export solved? [board]
   (if (consistent? board)
