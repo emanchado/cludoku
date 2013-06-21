@@ -2,7 +2,7 @@
   (:use clojure.set)
   (:use cludoku.board))
 
-(defn remove-doubles [cell-set]
+(defn naked-pairs [cell-set]
   (let [possible-repeated-pair
         (ffirst (filter #(= (nth % 1) 2)
                         (frequencies ((group-by #(count %)
@@ -52,5 +52,5 @@
                                 (range dim))]
       (merge row-updates col-updates block-updates))))
 
-(def rules [(region-rule remove-doubles)
+(def rules [(region-rule naked-pairs)
             (region-rule single-cell-candidate)])
