@@ -3,6 +3,15 @@
   (:use cludoku.board)
   (:gen-class))
 
+; Stolen from http://stackoverflow.com/questions/4830900/how-do-i-find-the-index-of-an-item-in-a-vector
+(defn indexed
+  "Returns a lazy sequence of [index, item] pairs, where items come
+  from 's' and indexes count up from zero.
+
+  (indexed '(a b c d))  =>  ([0 a] [1 b] [2 c] [3 d])"
+  [s]
+  (map vector (iterate inc 0) s))
+
 (defn -main
   [& args]
   (let [b (import-board (first args))
@@ -10,15 +19,17 @@
         rules cludoku.solver/rules]
     (loop [cnt 0
            board initial-board]
-      (let [new-board
-            (reduce (fn [acc-board rule]
-                      (let [update (rule acc-board)]
+      (let [nrules (count rules)
+            new-board
+            (reduce (fn [acc-board [nrule rule]]
+                      (let [step-count (+ (* nrules cnt) nrule)
+                            update (rule acc-board)]
                         (prn (export-board acc-board))
-                        (with-open [w (clojure.java.io/writer (str "sudoku-" cnt ".html"))]
+                        (with-open [w (clojure.java.io/writer (str "sudoku-" step-count ".html"))]
                           (.write w (print-board board)))
                         (board-update acc-board update)))
                     board
-                    rules)]
+                    (indexed rules))]
         (if (and (not (solved? new-board))
                  (not= board new-board))
           (recur (inc cnt)
