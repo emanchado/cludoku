@@ -111,10 +111,9 @@
                (do
           %><span class="sudoku-number"><%= (first candidates) %></span><%
                )
-               (dotimes [i (count candidates)]
-                 (let [candidate-list (seq candidates)]
+               (doseq [candidate candidates]
             %><span
-                class="sudoku-candidate sudoku-candidate-<%= i %>"><%= (nth candidate-list i) %></span><% ))
+                class="sudoku-candidate sudoku-candidate-<%= (- candidate 1) %>"><%= candidate %></span><% )
              )) %>
 </div><% )
 %></div><%
