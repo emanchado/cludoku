@@ -37,6 +37,71 @@
             (remove (fn [[cand pos-list]] (not= (count pos-list) 1))
                     unsolved-cands))))
 
+(defn skip-cells [to-skip cell-list]
+  (into {} (remove (fn [row-cell]
+                     (some #(= (first row-cell) %) to-skip))
+                   cell-list)))
+
+(defn drop-candidates [unwanted-cands cells]
+  (map (fn [[pos cands]]
+         [pos (set (remove #(contains? unwanted-cands %) cands))])
+       (filter (fn [[_ cands]]
+                 (some #(contains? cands %) unwanted-cands))
+               cells)))
+
+(defn candidate-lines [board]
+  (reduce (fn [acc-changes blockn]
+            (let [block (board-block board blockn)
+                  unsolved-cells (filter (fn [[_ cands]] (> (count cands) 1))
+                                         block)
+                  all-cands (reduce (fn [acc [_ cands]]
+                                      (clojure.set/union acc cands))
+                                    #{}
+                                    unsolved-cells)
+                  cands-pos (reduce (fn [acc cand]
+                                      (merge acc
+                                             {cand
+                                              (map #(first %)
+                                                   (filter (fn [[_ cands]]
+                                                             (contains? cands
+                                                                        cand))
+                                                           unsolved-cells))}))
+                                    {}
+                                    all-cands)
+                  cand-horiz-lines (filter (fn [[cand pos-list]]
+                                             (= (count (frequencies (map first pos-list))) 1))
+                                           cands-pos)
+                  cand-vert-lines (filter (fn [[cand pos-list]]
+                                            (= (count (frequencies (map second pos-list))) 1))
+                                          cands-pos)
+                  horiz-line-updates (reduce (fn [acc [cand list-coords]]
+                                               (let [rown (ffirst list-coords)
+                                                     row (board-row board
+                                                                    rown)]
+                                                 (into acc
+                                                       (drop-candidates
+                                                        #{cand}
+                                                        (skip-cells list-coords
+                                                                    row)))))
+                                             {}
+                                             cand-horiz-lines)
+                  vert-line-updates (reduce (fn [acc [cand list-coords]]
+                                              (let [coln (second (first
+                                                                  list-coords))
+                                                    col (board-col board coln)]
+                                                (into acc
+                                                      (drop-candidates
+                                                       #{cand}
+                                                       (skip-cells list-coords
+                                                                   col)))))
+                                            {}
+                                            cand-vert-lines)]
+              (merge acc-changes
+                     horiz-line-updates
+                     vert-line-updates)))
+          {}
+          (range (dim board))))
+
 (defn region-rule [f]
   (fn [board]
     (let [dim (dim board)
@@ -53,4 +118,5 @@
       (merge row-updates col-updates block-updates))))
 
 (def rules [(region-rule naked-pairs)
-            (region-rule single-cell-candidate)])
+            (region-rule single-cell-candidate)
+            candidate-lines])
