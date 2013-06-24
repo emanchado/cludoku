@@ -43,11 +43,12 @@
                    cell-list)))
 
 (defn drop-candidates [unwanted-cands cells]
-  (map (fn [[pos cands]]
-         [pos (set (remove #(contains? unwanted-cands %) cands))])
-       (filter (fn [[_ cands]]
-                 (some #(contains? cands %) unwanted-cands))
-               cells)))
+  (into {} (vec (map (fn [[pos cands]]
+                       [pos (set (remove #(contains? unwanted-cands %)
+                                         cands))])
+                     (filter (fn [[_ cands]]
+                               (some #(contains? cands %) unwanted-cands))
+                             cells)))))
 
 (defn candidate-lines [board]
   (reduce (fn [acc-changes blockn]
@@ -78,22 +79,22 @@
                                                (let [rown (ffirst list-coords)
                                                      row (board-row board
                                                                     rown)]
-                                                 (into acc
-                                                       (drop-candidates
-                                                        #{cand}
-                                                        (skip-cells list-coords
-                                                                    row)))))
+                                                 (merge acc
+                                                        (drop-candidates
+                                                         #{cand}
+                                                         (skip-cells list-coords
+                                                                     row)))))
                                              {}
                                              cand-horiz-lines)
                   vert-line-updates (reduce (fn [acc [cand list-coords]]
                                               (let [coln (second (first
                                                                   list-coords))
                                                     col (board-col board coln)]
-                                                (into acc
-                                                      (drop-candidates
-                                                       #{cand}
-                                                       (skip-cells list-coords
-                                                                   col)))))
+                                                (merge acc
+                                                       (drop-candidates
+                                                        #{cand}
+                                                        (skip-cells list-coords
+                                                                    col)))))
                                             {}
                                             cand-vert-lines)]
               (merge acc-changes
@@ -101,6 +102,57 @@
                      vert-line-updates)))
           {}
           (range (dim board))))
+
+(defn with-candidate [cand]
+  (fn [[_ cands]]
+    (contains? cands cand)))
+
+(defn x-wing [board]
+  (let [dim-range (range (dim board))]
+    (reduce (fn [acc cand]
+              (let [coords-with-cand (map first (filter (with-candidate cand)
+                                                        (:cells board)))
+                    by-rows (reduce (fn [acc [x y]]
+                                      (conj acc [x (conj (get acc x #{}) y)]))
+                                    {}
+                                    coords-with-cand)
+                    rows-with-two-cands (filter (fn [[_ y]]
+                                                  (= (count y) 2))
+                                                by-rows)
+                    columns-with-two-cand-rows (reduce (fn [acc [x ys]]
+                                                         (conj acc [ys
+                                                                    (conj (get acc ys #{}) x)]))
+                                                       {}
+                                                       rows-with-two-cands)
+                    x-wing-coords (first (filter (fn [[_ row-set]]
+                                                   (= (count row-set) 2))
+                                                 columns-with-two-cand-rows))]
+                ;; Find two rows that have the candidate in only two
+                ;; columns (AND LATER, also two columns that have the
+                ;; candidate in only two rows)
+                (if (> (count x-wing-coords) 0)
+                  (let [[[y1 y2] [x1 x2]] (map seq x-wing-coords)
+                        cell1 [x1 y1]
+                        cell2 [x1 y2]
+                        cell3 [x2 y1]
+                        cell4 [x2 y2]
+                        x-wing-cells [cell1 cell2 cell3 cell4]]
+                    (merge acc
+                           (drop-candidates #{cand}
+                                            (skip-cells x-wing-cells
+                                                        (board-row board x1)))
+                           (drop-candidates #{cand}
+                                            (skip-cells x-wing-cells
+                                                        (board-row board x2)))
+                           (drop-candidates #{cand}
+                                            (skip-cells x-wing-cells
+                                                        (board-col board y1)))
+                           (drop-candidates #{cand}
+                                            (skip-cells x-wing-cells
+                                                        (board-col board y2)))))
+                  acc)))
+            {}
+            dim-range)))
 
 (defn region-rule [f]
   (fn [board]
@@ -119,4 +171,5 @@
 
 (def rules [(region-rule naked-pairs)
             (region-rule single-cell-candidate)
-            candidate-lines])
+            candidate-lines
+            x-wing])
