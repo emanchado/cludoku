@@ -2,20 +2,31 @@
   (:use clojure.set)
   (:use cludoku.board))
 
+(defn skip-cells [to-skip cell-list]
+  (into {} (remove (fn [row-cell]
+                     (some #(= (first row-cell) %) to-skip))
+                   cell-list)))
+
+(defn with-candidate [cand]
+  (fn [[_ cands]]
+    (contains? cands cand)))
+
+(defn drop-candidates [unwanted-cands cells]
+  (into {} (vec (map (fn [[pos cands]]
+                       [pos (into #{} (remove unwanted-cands cands))])
+                     (filter (fn [[_ cands]]
+                               (some #(contains? cands %) unwanted-cands))
+                             cells)))))
+
 (defn naked-pairs [cell-set]
-  (let [possible-repeated-pair
+  (let [repeated-pair
         (ffirst (filter #(= (nth % 1) 2)
                         (frequencies ((group-by #(count %)
                                                 (vals cell-set)) 2))))]
-    (if possible-repeated-pair
-      (into {} (map (fn [cell-pair] [(first cell-pair)
-                                    (if (= (second cell-pair)
-                                           possible-repeated-pair)
-                                      (second cell-pair)
-                                      (into #{} (remove possible-repeated-pair
-                                                        (second cell-pair))))])
-                    (filter #(and (some possible-repeated-pair (second %))
-                                  (not= possible-repeated-pair (second %))) cell-set)))
+    (if repeated-pair
+      (drop-candidates repeated-pair
+                       (filter (fn [[_ cands]] (not= cands repeated-pair))
+                               cell-set))
       {})))
 
 (defn single-cell-candidate [cell-set]
@@ -37,19 +48,6 @@
             (remove (fn [[cand pos-list]] (not= (count pos-list) 1))
                     unsolved-cands))))
 
-(defn skip-cells [to-skip cell-list]
-  (into {} (remove (fn [row-cell]
-                     (some #(= (first row-cell) %) to-skip))
-                   cell-list)))
-
-(defn drop-candidates [unwanted-cands cells]
-  (into {} (vec (map (fn [[pos cands]]
-                       [pos (set (remove #(contains? unwanted-cands %)
-                                         cands))])
-                     (filter (fn [[_ cands]]
-                               (some #(contains? cands %) unwanted-cands))
-                             cells)))))
-
 (defn candidate-lines [board]
   (reduce (fn [acc-changes blockn]
             (let [block (board-block board blockn)
@@ -63,9 +61,7 @@
                                       (merge acc
                                              {cand
                                               (map #(first %)
-                                                   (filter (fn [[_ cands]]
-                                                             (contains? cands
-                                                                        cand))
+                                                   (filter (with-candidate cand)
                                                            unsolved-cells))}))
                                     {}
                                     all-cands)
@@ -102,10 +98,6 @@
                      vert-line-updates)))
           {}
           (range (dim board))))
-
-(defn with-candidate [cand]
-  (fn [[_ cands]]
-    (contains? cands cand)))
 
 (defn x-wing [board]
   (let [dim-range (range (dim board))]
