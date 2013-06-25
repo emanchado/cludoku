@@ -148,8 +148,9 @@
       (= number-unknowns 0))
     (throw (IllegalStateException. "Inconsistent board!"))))
 
-(defn ^:export print-board [board]
-  (template/eval (slurp "templates/board.eclj") {:board board}))
+(defn ^:export print-board [board & [updates]]
+  (template/eval (slurp "templates/board.eclj") {:board board
+                                                 :updates updates}))
 
 (defn ^:export export-board [board]
   (let [index-range (range (* (:block-height board)

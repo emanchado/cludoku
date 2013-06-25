@@ -27,7 +27,7 @@
                             update (rule acc-board)
                             updated-board (board-update acc-board update)]
                         (with-open [w (clojure.java.io/writer (str "sudoku-" step-count ".html"))]
-                          (.write w (print-board updated-board)))
+                          (.write w (print-board acc-board update)))
                         (prn (export-board updated-board))
                         updated-board))
                     board

@@ -47,6 +47,10 @@
           color: #888;
           margin: 1px;
         }
+        .sudoku-candidate-dropped {
+          color: #a00;
+          text-decoration: line-through;
+        }
 
         .sudoku-candidate-0 {
           position: absolute;
@@ -107,13 +111,16 @@
       <% (doseq [ncol index-range]
            (let [candidates (second (find (:cells board) [nrow ncol]))]
 %><div class="sudoku-cell"><%
-             (if (= (count candidates) 1) 
+             (if (= (count candidates) 1)
                (do
           %><span class="sudoku-number"><%= (first candidates) %></span><%
                )
                (doseq [candidate candidates]
-            %><span
-                class="sudoku-candidate sudoku-candidate-<%= (- candidate 1) %>"><%= candidate %></span><% )
+                 (let [cell-updates (get updates [nrow ncol] #{})]
+            %><span class="<%
+                 (when (and (not= cell-updates #{})
+                            (not (contains? cell-updates candidate)))
+                     %>sudoku-candidate-dropped <% ) %>sudoku-candidate sudoku-candidate-<%= (- candidate 1) %>"><%= candidate %></span><% ))
              )) %>
 </div><% )
 %></div><%
