@@ -126,5 +126,8 @@
 %></div><%
      ))
 %></div>
+
+            <% (when (not (nil? step))
+             %><a href="sudoku-<%= (inc step) %>.html">Next</a><% ) %>
           </body>
         </html>
