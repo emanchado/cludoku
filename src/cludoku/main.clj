@@ -16,24 +16,29 @@
   [& args]
   (let [b (import-board (first args))
         initial-board (create-board b)
-        rules cludoku.solver/rules]
+        rules cludoku.solver/rules
+        step-count (atom 0)]
     (prn (export-board initial-board))
     (loop [cnt 0
            board initial-board]
       (let [nrules (count rules)
             new-board
             (reduce (fn [acc-board [nrule rule]]
-                      (let [step-count (+ (* nrules cnt) nrule)
-                            update (rule acc-board)
+                      (let [update (rule acc-board)
                             updated-board (board-update acc-board update)]
-                        (with-open [w (clojure.java.io/writer (str "sudoku-" step-count ".html"))]
-                          (.write w (print-board acc-board {:updates update
-                                                            :step step-count })))
-                        (prn (export-board updated-board))
+                        (when (not= update {})
+                          (with-open [w (clojure.java.io/writer (str "sudoku-" @step-count ".html"))]
+                            (.write w (print-board acc-board {:updates update
+                                                              :step @step-count })))
+                          (prn (export-board updated-board))
+                          (swap! step-count inc))
                         updated-board))
                     board
                     (indexed rules))]
         (if (and (not (solved? new-board))
                  (not= board new-board))
           (recur (inc cnt)
-                 new-board))))))
+                 new-board)
+          (with-open [w (clojure.java.io/writer (str "sudoku-" @step-count ".html"))]
+            (.write w (print-board new-board {:step @step-count
+                                              :final-step true}))))))))

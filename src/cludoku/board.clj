@@ -155,7 +155,8 @@
      (template/eval (slurp "templates/board.eclj")
                     {:board board
                      :updates (get options :updates {})
-                     :step (get options :step)})))
+                     :step (get options :step)
+                     :final-step (get options :final-step false)})))
 
 (defn ^:export export-board [board]
   (let [index-range (range (* (:block-height board)
