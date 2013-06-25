@@ -161,7 +161,11 @@
                                 (range dim))]
       (merge row-updates col-updates block-updates))))
 
-(def rules [(region-rule naked-pairs)
-            (region-rule single-cell-candidate)
-            candidate-lines
-            x-wing])
+(def rules [{:name "Naked pairs"
+             :function (region-rule naked-pairs)}
+            {:name "Candidate in a single cell"
+             :function (region-rule single-cell-candidate)}
+            {:name "Candidate lines"
+             :function candidate-lines}
+            {:name "X-Wing"
+             :function x-wing}])

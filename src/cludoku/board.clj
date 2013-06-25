@@ -156,7 +156,8 @@
                     {:board board
                      :updates (get options :updates {})
                      :step (get options :step)
-                     :final-step (get options :final-step false)})))
+                     :final-step (get options :final-step false)
+                     :rule (get options :rule)})))
 
 (defn ^:export export-board [board]
   (let [index-range (range (* (:block-height board)

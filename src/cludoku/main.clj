@@ -3,38 +3,30 @@
   (:use cludoku.board)
   (:gen-class))
 
-; Stolen from http://stackoverflow.com/questions/4830900/how-do-i-find-the-index-of-an-item-in-a-vector
-(defn indexed
-  "Returns a lazy sequence of [index, item] pairs, where items come
-  from 's' and indexes count up from zero.
-
-  (indexed '(a b c d))  =>  ([0 a] [1 b] [2 c] [3 d])"
-  [s]
-  (map vector (iterate inc 0) s))
-
 (defn -main
   [& args]
   (let [b (import-board (first args))
         initial-board (create-board b)
-        rules cludoku.solver/rules
-        step-count (atom 0)]
+        step-count (atom 1)]
     (prn (export-board initial-board))
+    (with-open [w (clojure.java.io/writer (str "sudoku-0.html"))]
+      (.write w (print-board initial-board {:step @step-count })))
     (loop [cnt 0
            board initial-board]
-      (let [nrules (count rules)
-            new-board
-            (reduce (fn [acc-board [nrule rule]]
-                      (let [update (rule acc-board)
+      (let [new-board
+            (reduce (fn [acc-board {rule-name :name rule-function :function}]
+                      (let [update (rule-function acc-board)
                             updated-board (board-update acc-board update)]
                         (when (not= update {})
                           (with-open [w (clojure.java.io/writer (str "sudoku-" @step-count ".html"))]
                             (.write w (print-board acc-board {:updates update
-                                                              :step @step-count })))
+                                                              :step @step-count
+                                                              :rule rule-name})))
                           (prn (export-board updated-board))
                           (swap! step-count inc))
                         updated-board))
                     board
-                    (indexed rules))]
+                    cludoku.solver/rules)]
         (if (and (not (solved? new-board))
                  (not= board new-board))
           (recur (inc cnt)

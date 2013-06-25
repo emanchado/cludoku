@@ -127,8 +127,14 @@
      ))
 %></div>
 
+            <% (when rule
+             %><p>Rule <strong><%= rule %></strong>.</p><%) %>
+
             <% (when (and (not (nil? step))
                           (not final-step))
-             %><a href="sudoku-<%= (inc step) %>.html">Next</a><% ) %>
+             %><p><a href="sudoku-<%= (inc step) %>.html">Next</a></p><% ) %>
+
+            <% (when final-step
+             %><p>End</p><% ) %>
           </body>
         </html>
