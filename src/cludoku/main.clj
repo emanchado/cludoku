@@ -8,7 +8,6 @@
   (let [b (import-board (first args))
         initial-board (create-board b)
         step-count (atom 1)]
-    (prn (export-board initial-board))
     (with-open [w (clojure.java.io/writer (str "sudoku-0.html"))]
       (.write w (print-board initial-board {:step @step-count })))
     (loop [cnt 0
@@ -22,7 +21,7 @@
                             (.write w (print-board acc-board {:updates update
                                                               :step @step-count
                                                               :rule rule-name})))
-                          (prn (export-board updated-board))
+                          (println (str "Applying rule '" rule-name "'"))
                           (swap! step-count inc))
                         updated-board))
                     board
@@ -31,6 +30,10 @@
                  (not= board new-board))
           (recur (inc cnt)
                  new-board)
-          (with-open [w (clojure.java.io/writer (str "sudoku-" @step-count ".html"))]
-            (.write w (print-board new-board {:step @step-count
-                                              :final-step true}))))))))
+          (do
+            (with-open [w (clojure.java.io/writer (str "sudoku-" @step-count ".html"))]
+              (.write w (print-board new-board {:step @step-count
+                                                :final-step true})))
+            (if (solved? new-board)
+              (println "Solved!")
+              (println (str "Could not solve Sudoku, see sudoku-" @step-count ".html for the final state")))))))))
