@@ -7,6 +7,6 @@ Lisp dialect).
 
 ## License
 
-Copyright © 2012 Esteban Manchado Velázquez
+Copyright © 2012-2013 Esteban Manchado Velázquez
 
 Distributed under the Eclipse Public License, the same as Clojure.
