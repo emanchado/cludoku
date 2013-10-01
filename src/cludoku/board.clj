@@ -121,9 +121,9 @@
 (defn consistent-sets? [board set-function]
   (every?
    (fn [n]
-     (let [final-numbers (map #(first %)
+     (let [final-numbers (map first
                               (filter #(= (count %) 1)
-                                      (map #(second %)
+                                      (map second
                                            (set-function board n))))]
        (or (empty? final-numbers)
            (apply distinct? final-numbers))))

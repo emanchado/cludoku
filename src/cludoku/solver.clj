@@ -60,7 +60,7 @@
                   cands-pos (reduce (fn [acc cand]
                                       (merge acc
                                              {cand
-                                              (map #(first %)
+                                              (map first
                                                    (filter (with-candidate cand)
                                                            unsolved-cells))}))
                                     {}
