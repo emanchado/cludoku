@@ -3,15 +3,23 @@
   (:use cludoku.board))
 
 (defn skip-cells [to-skip cell-list]
-  (into {} (remove (fn [row-cell]
-                     (some #(= (first row-cell) %) to-skip))
+  "Given a list of coordinates and a cell set, return a new cell set like
+   the given one but skipping any cells in the given coordinates."
+  (into {} (remove (fn [[coords cands]]
+                     (some #(= coords %) to-skip))
                    cell-list)))
 
 (defn with-candidate [cand]
+  "Given a number 'cand', returns a function that receives a cell and
+   checks if the cell has 'cand' among its candidates. The returned
+   function is very useful in combination with filter and similar
+   functions."
   (fn [[_ cands]]
     (contains? cands cand)))
 
 (defn drop-candidates [unwanted-cands cells]
+  "Returns a cell set like the given one, but without any of the given
+   unwanted candidates."
   (into {} (vec (map (fn [[pos cands]]
                        [pos (into #{} (remove unwanted-cands cands))])
                      (filter (fn [[_ cands]]
@@ -169,3 +177,4 @@
              :function candidate-lines}
             {:name "X-Wing"
              :function x-wing}])
+
