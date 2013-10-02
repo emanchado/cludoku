@@ -176,7 +176,7 @@
         updated-board (merge board {:cells (merge (:cells board) update)})]
     (remove-final-numbers updated-board final-numbers)))
 
-(defn ^:export solved? [board]
+(defn solved? [board]
   "Returns true if the given board is solved (all cells contain final
    numbers). Throws an exception if the board is inconsistent, ie. if
    there are any repeated final numbers."
@@ -187,7 +187,7 @@
       (= number-unknowns 0))
     (throw (IllegalStateException. "Inconsistent board!"))))
 
-(defn ^:export print-board
+(defn print-board
   "Returns an HTML representation of the given board. The second,
    optional parameter is a map with options. Possible options are:
 
@@ -206,7 +206,7 @@
                      :final-step (get options :final-step false)
                      :rule (get options :rule)})))
 
-(defn ^:export export-board [board]
+(defn export-board [board]
   "Returns a proto-board of the given board. Useful to eg. print an
    ASCII version of the board."
   (let [index-range (range (* (:block-height board)
@@ -222,7 +222,7 @@
                                          index-range)))
                              index-range))})))
 
-(defn ^:export import-board [filename]
+(defn import-board [filename]
   "Returns a new board read from the given filename. The format of the
    file must be a first line with two space-separated numbers
    indicating the width and height of the block, and the rest of the
