@@ -188,7 +188,14 @@
     (throw (IllegalStateException. "Inconsistent board!"))))
 
 (defn ^:export print-board
-  "Returns an HTML representation of the given board."
+  "Returns an HTML representation of the given board. The second,
+   optional parameter is a map with options. Possible options are:
+
+   :updates    - a cell set with the last update made to the board
+   :step       - a number identifying the current step (1, 2, 3, ...)
+   :final-step - a optional boolean indicating if this step is the
+                 last one (defaults to false)
+   :rule       - the name of the last applied rule (eg. 'Naked pairs')"
   ([board]
      (print-board board {}))
   ([board options]
