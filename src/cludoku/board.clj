@@ -1,6 +1,8 @@
 (ns cludoku.board)
 (require '[comb.template :as template])
 
+(defrecord Board [block-width block-height cells])
+
 (defn dim [board]
   "Returns the board side size, ie. the number of different symbols to
    be used in the board."
@@ -135,8 +137,9 @@
                                         range-dim)))
                               {}
                               range-dim)
-          raw-board (conj proto-board
-                          [:cells final-cells])]
+          raw-board (map->Board {:block-width (:block-width proto-board)
+                                 :block-height (:block-height proto-board)
+                                 :cells final-cells})]
       (remove-final-numbers raw-board
                             (filter (fn [[pos cands]]
                                       (= (count cands) 1))
