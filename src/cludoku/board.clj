@@ -117,27 +117,26 @@
    is a list of lists with the contents of the board (either nil or a
    number)."
   (if (well-formed? proto-board)
-    (let [dim (* (:block-height proto-board)
-                 (:block-width  proto-board))
-          cells (:cells proto-board)
+    (let [range-dim (range (* (:block-height proto-board)
+                              (:block-width  proto-board)))
+          proto-cells (:cells proto-board)
+          final-cells (reduce (fn [row-acc x]
+                                (merge row-acc
+                                       (reduce
+                                        (fn [col-acc y]
+                                          (let [row-x (nth proto-cells x)
+                                                cell-contents (nth row-x y)
+                                                cands (if (nil? cell-contents)
+                                                        (set (map inc
+                                                                  range-dim))
+                                                        #{cell-contents})]
+                                            (merge col-acc [[x y] cands])))
+                                        {}
+                                        range-dim)))
+                              {}
+                              range-dim)
           raw-board (conj proto-board
-                          [:cells
-                           (reduce
-                            (fn [row-acc x]
-                              (merge row-acc
-                                     (reduce
-                                      (fn [col-acc y]
-                                        (let [number (nth (nth cells x) y)]
-                                          (merge col-acc
-                                                 [[x y]
-                                                  (if (nil? number)
-                                                    (set (map #(+ % 1)
-                                                              (range dim)))
-                                                    #{number})])))
-                                      {}
-                                      (range dim))))
-                            {}
-                            (range dim))])]
+                          [:cells final-cells])]
       (remove-final-numbers raw-board
                             (filter (fn [[pos cands]]
                                       (= (count cands) 1))
