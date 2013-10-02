@@ -15,7 +15,7 @@
       (let [new-board
             (reduce (fn [acc-board {rule-name :name rule-function :function}]
                       (let [update (rule-function acc-board)
-                            updated-board (board-update acc-board update)]
+                            updated-board (update-board acc-board update)]
                         (when (not= update {})
                           (with-open [w (clojure.java.io/writer (str "sudoku-" @step-count ".html"))]
                             (.write w (print-board acc-board {:updates update

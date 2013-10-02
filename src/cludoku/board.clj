@@ -168,7 +168,7 @@
        (consistent-sets? board board-col)
        (consistent-sets? board board-block)))
 
-(defn board-update [board update]
+(defn update-board [board update]
   "Given a board and a cell set, returns a new board with the cell set
    applied as an update."
   (let [final-numbers (filter #(= (count (second %)) 1)

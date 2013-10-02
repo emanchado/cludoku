@@ -177,7 +177,7 @@
 
 (deftest board-update-algorithm
   (testing "Can apply a simple update to an empty board"
-    (is (= (:cells (board-update (create-board {:block-height 2
+    (is (= (:cells (update-board (create-board {:block-height 2
                                                 :block-width 2
                                                 :cells [[nil nil nil nil]
                                                         [nil nil nil nil]
@@ -190,7 +190,7 @@
             [3 0] #{2 3 4} [3 1] #{1 2 3 4} [3 2] #{1 2 3 4} [3 3] #{1 2 3 4}})))
 
   (testing "Cleans up candidates recursively"
-    (is (= (:cells (board-update {:block-height 2
+    (is (= (:cells (update-board {:block-height 2
                                   :block-width 2
                                   :cells {[0 0] #{1}       [0 1] #{1 2 3 4} [0 2] #{1 2 3 4} [0 3] #{1 2 3 4}
                                           [1 0] #{1 2 3 4} [1 1] #{1 2}     [1 2] #{1 2 3 4} [1 3] #{1 2 3 4}
