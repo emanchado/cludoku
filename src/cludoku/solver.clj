@@ -26,11 +26,20 @@
                                (some #(contains? cands %) unwanted-cands))
                              cells)))))
 
+(defn unsolved-cells [cell-set]
+  "Returns a cell set that only contains the unsolved cells of the given set"
+  (filter (fn [[_ cands]]
+            (not= (count cands) 1))
+          cell-set))
+
+
+;; Rules ---------------------------------------------------------------------
+
 (defn naked-pairs [cell-set]
-  (let [repeated-pair
-        (ffirst (filter #(= (nth % 1) 2)
-                        (frequencies ((group-by #(count %)
-                                                (vals cell-set)) 2))))]
+  (let [cells-with-two-cands ((group-by #(count %)
+                                        (vals cell-set)) 2)
+        repeated-pair (ffirst (filter #(= (nth % 1) 2)
+                                      (frequencies cells-with-two-cands)))]
     (if repeated-pair
       (drop-candidates repeated-pair
                        (filter (fn [[_ cands]] (not= cands repeated-pair))
@@ -38,29 +47,29 @@
       {})))
 
 (defn single-cell-candidate [cell-set]
-  (let [unsolved-cells (remove (fn [[a b]] (= (count b) 1)) cell-set)
-        unsolved-cands (reduce (fn [acc [pos b]]
-                                 (conj acc
-                                       (reduce
-                                        (fn [acc2 cand]
-                                          (conj acc2
-                                                [cand (conj (get acc cand ())
-                                                            pos)]))
-                                        {}
-                                        b)))
-                               {}
-                               unsolved-cells)]
+  (let [unsolved-cells (unsolved-cells cell-set)
+        unsolved-cand-pos (reduce (fn [acc [pos cands]]
+                                    (conj acc
+                                          (reduce
+                                           (fn [acc2 cand]
+                                             (conj acc2
+                                                   [cand (conj (get acc cand ())
+                                                               pos)]))
+                                           {}
+                                           cands)))
+                                  {}
+                                  unsolved-cells)]
     (reduce (fn [acc [cand pos-list]]
-              (conj acc [(first pos-list) #{cand}]))
+              (if (= (count pos-list) 1)
+                (conj acc [(first pos-list) #{cand}])
+                acc))
             {}
-            (remove (fn [[cand pos-list]] (not= (count pos-list) 1))
-                    unsolved-cands))))
+            unsolved-cand-pos)))
 
 (defn candidate-lines [board]
   (reduce (fn [acc-changes blockn]
             (let [block (board-block board blockn)
-                  unsolved-cells (filter (fn [[_ cands]] (> (count cands) 1))
-                                         block)
+                  unsolved-cells (unsolved-cells block)
                   all-cands (reduce (fn [acc [_ cands]]
                                       (clojure.set/union acc cands))
                                     #{}
@@ -116,17 +125,20 @@
                                       (conj acc [x (conj (get acc x #{}) y)]))
                                     {}
                                     coords-with-cand)
-                    rows-with-two-cands (filter (fn [[_ y]]
-                                                  (= (count y) 2))
+                    rows-with-two-cands (filter (fn [[_ ys]]
+                                                  (= (count ys) 2))
                                                 by-rows)
-                    columns-with-two-cand-rows (reduce (fn [acc [x ys]]
-                                                         (conj acc [ys
-                                                                    (conj (get acc ys #{}) x)]))
-                                                       {}
-                                                       rows-with-two-cands)
+                    two-cand-rows-by-column (reduce
+                                             (fn [acc [x ys]]
+                                               (conj acc
+                                                     [ys
+                                                      (conj (get acc ys #{})
+                                                            x)]))
+                                             {}
+                                             rows-with-two-cands)
                     x-wing-coords (first (filter (fn [[_ row-set]]
                                                    (= (count row-set) 2))
-                                                 columns-with-two-cand-rows))]
+                                                 two-cand-rows-by-column))]
                 ;; Find two rows that have the candidate in only two
                 ;; columns (AND LATER, also two columns that have the
                 ;; candidate in only two rows)
@@ -154,7 +166,12 @@
             {}
             dim-range)))
 
+
 (defn region-rule [f]
+  "Given a region rule function (ie. a rule function that operates on
+   a cell set instead of the whole board), returns a regular rule
+   function that will apply the region rule to all rows, columns and
+   blocks."
   (fn [board]
     (let [dim (dim board)
           row-updates (reduce (fn [acc i] (merge acc (f (board-row board i))))
@@ -168,6 +185,7 @@
                                 {}
                                 (range dim))]
       (merge row-updates col-updates block-updates))))
+
 
 (def rules [{:name "Naked pairs"
              :function (region-rule naked-pairs)}
