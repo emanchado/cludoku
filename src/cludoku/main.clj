@@ -9,7 +9,7 @@
         initial-board (create-board b)
         step-count (atom 1)]
     (with-open [w (clojure.java.io/writer (str "sudoku-0.html"))]
-      (.write w (print-board initial-board {:step @step-count })))
+      (.write w (print-board initial-board {:step 0})))
     (loop [cnt 0
            board initial-board]
       (let [new-board
