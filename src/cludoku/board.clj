@@ -87,8 +87,7 @@
         (reduce (fn [acc-cells final-number]
                   (let [[pos one-element-set] final-number
                         number (first one-element-set)
-                        acc-board (merge board {:cells (merge (:cells board)
-                                                              acc-cells)})
+                        acc-board (update-in board [:cells] merge acc-cells)
                         row-wo-final (remove-candidate
                                       number
                                       (board-row acc-board (first pos)))
@@ -104,7 +103,7 @@
                            block-wo-final)))
                 {}
                 new-final-numbers)
-        updated-board (merge board {:cells (merge (:cells board) update)})
+        updated-board (update-in board [:cells] merge update)
         new-finals (filter (fn [[_ new-cand-set]]
                              (= (count new-cand-set) 1))
                            update)]
@@ -175,7 +174,7 @@
    applied as an update."
   (let [final-numbers (filter #(= (count (second %)) 1)
                               update)
-        updated-board (merge board {:cells (merge (:cells board) update)})]
+        updated-board (update-in board [:cells] merge update)]
     (remove-final-numbers updated-board final-numbers)))
 
 (defn solved? [board]
