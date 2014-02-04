@@ -21,7 +21,7 @@
   "Returns a cell set like the given one, but without any of the given
    unwanted candidates."
   (into {} (vec (map (fn [[pos cands]]
-                       [pos (into #{} (remove unwanted-cands cands))])
+                       [pos (set (remove unwanted-cands cands))])
                      (filter (fn [[_ cands]]
                                (some #(contains? cands %) unwanted-cands))
                              cells)))))
@@ -36,7 +36,7 @@
 ;; Rules ---------------------------------------------------------------------
 
 (defn naked-pairs [cell-set]
-  (let [cells-with-two-cands ((group-by #(count %)
+  (let [cells-with-two-cands ((group-by count
                                         (vals cell-set)) 2)
         repeated-pair (ffirst (filter #(= (nth % 1) 2)
                                       (frequencies cells-with-two-cands)))]
@@ -142,7 +142,7 @@
                 ;; Find two rows that have the candidate in only two
                 ;; columns (AND LATER, also two columns that have the
                 ;; candidate in only two rows)
-                (if (> (count x-wing-coords) 0)
+                (if (pos? (count x-wing-coords))
                   (let [[[y1 y2] [x1 x2]] (map seq x-wing-coords)
                         cell1 [x1 y1]
                         cell2 [x1 y2]

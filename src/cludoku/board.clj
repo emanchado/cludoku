@@ -11,7 +11,7 @@
 (defn board-row [board row-number]
   "Returns a cell set with the row identified by the given row
    number."
-  (merge {} (filter #(= (first (first %)) row-number) (:cells board))))
+  (merge {} (filter #(= (ffirst %) row-number) (:cells board))))
 
 (defn board-col [board col-number]
   "Returns a cell set with the column identified by the given column
@@ -26,8 +26,8 @@
         first-col (mod (* block-number (:block-width board))
                        (dim board))
         last-col  (dec (+ first-col (:block-width board)))]
-    (merge {} (filter #(and (>= (first (first %)) first-row)
-                            (<= (first (first %)) last-row)
+    (merge {} (filter #(and (>= (ffirst %) first-row)
+                            (<= (ffirst %) last-row)
                             (>= (second (first %)) first-col)
                             (<= (second (first %)) last-col))
                       (:cells board)))))
@@ -108,7 +108,7 @@
         new-finals (filter (fn [[_ new-cand-set]]
                              (= (count new-cand-set) 1))
                            update)]
-    (if (> (count new-finals) 0)
+    (if (pos? (count new-finals))
       (remove-final-numbers updated-board new-finals)
       updated-board)))
 
@@ -186,7 +186,7 @@
     (let [number-unknowns (count (filter (fn [coord-cand]
                                            (> (count (second coord-cand)) 1))
                                          (:cells board)))]
-      (= number-unknowns 0))
+      (zero? number-unknowns))
     (throw (IllegalStateException. "Inconsistent board!"))))
 
 (defn print-board
