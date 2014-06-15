@@ -117,10 +117,10 @@
                )
                (doseq [candidate candidates]
                  (let [cell-updates (get updates [nrow ncol] #{})]
-            %><span class="<%
+            %><div class="<%
                  (when (and (not= cell-updates #{})
                             (not (contains? cell-updates candidate)))
-                     %>sudoku-candidate-dropped <% ) %>sudoku-candidate sudoku-candidate-<%= candidate %>"><%= candidate %></span><% ))
+                     %>sudoku-candidate-dropped <% ) %>sudoku-candidate sudoku-candidate-<%= candidate %>"><%= candidate %></div><% ))
              )) %>
 </div><% )
 %></div><%
