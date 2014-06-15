@@ -52,50 +52,50 @@
           text-decoration: line-through;
         }
 
-        .sudoku-candidate-0 {
-          position: absolute;
-          left: 0;
-          top: 0;
-        }
         .sudoku-candidate-1 {
           position: absolute;
-          width: 50px;
-          text-align: center;
+          left: 0;
           top: 0;
         }
         .sudoku-candidate-2 {
           position: absolute;
-          right: 0%;
+          width: 50px;
+          text-align: center;
           top: 0;
         }
         .sudoku-candidate-3 {
           position: absolute;
-          left: 0;
-          line-height: 50px;
+          right: 0%;
+          top: 0;
         }
         .sudoku-candidate-4 {
           position: absolute;
-          width: 50px;
-          text-align: center;
+          left: 0;
           line-height: 50px;
         }
         .sudoku-candidate-5 {
           position: absolute;
-          right: 0%;
+          width: 50px;
+          text-align: center;
           line-height: 50px;
         }
         .sudoku-candidate-6 {
           position: absolute;
+          right: 0%;
+          line-height: 50px;
+        }
+        .sudoku-candidate-7 {
+          position: absolute;
           left: 0;
           bottom: 0%;
         }
-        .sudoku-candidate-7 {
+        .sudoku-candidate-8 {
           position: absolute;
           width: 50px;
           text-align: center;
           bottom: 0%;
         }
-        .sudoku-candidate-8 {
+        .sudoku-candidate-9 {
           position: absolute;
           right: 0%;
           bottom: 0%;
@@ -120,7 +120,7 @@
             %><span class="<%
                  (when (and (not= cell-updates #{})
                             (not (contains? cell-updates candidate)))
-                     %>sudoku-candidate-dropped <% ) %>sudoku-candidate sudoku-candidate-<%= (- candidate 1) %>"><%= candidate %></span><% ))
+                     %>sudoku-candidate-dropped <% ) %>sudoku-candidate sudoku-candidate-<%= candidate %>"><%= candidate %></span><% ))
              )) %>
 </div><% )
 %></div><%
