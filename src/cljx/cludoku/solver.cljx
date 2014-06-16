@@ -1,6 +1,6 @@
 (ns cludoku.solver
-  (:use clojure.set)
-  (:use cludoku.board))
+  (:require [clojure.set :as set]
+            [cludoku.board :refer [board-block board-row board-col dim]]))
 
 (defn skip-cells [to-skip cell-list]
   "Given a list of coordinates and a cell set, return a new cell set like
@@ -71,7 +71,7 @@
             (let [block (board-block board blockn)
                   unsolved-cells (unsolved-cells block)
                   all-cands (reduce (fn [acc [_ cands]]
-                                      (clojure.set/union acc cands))
+                                      (set/union acc cands))
                                     #{}
                                     unsolved-cells)
                   cands-pos (reduce (fn [acc cand]
