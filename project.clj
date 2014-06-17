@@ -15,10 +15,9 @@
   :source_paths ["src" "target/classes"]
   :cljsbuild {:builds [{:id "cljs"
                         :source-paths ["src" "target/generated/cljs"]
-                        :compiler {:output-to "cljs.js"
-                                   :output-dir "out"
-                                   :optimizations :none
-                                   :source-map true}}]}
+                        :compiler {:output-to "public/js/cljs.js"
+                                   :output-dir "public/js/out"
+                                   :optimizations :simple}}]}
   :cljx {:builds [{:source-paths ["src/cljx"]
                    :output-path "target/classes"
                    :rules :clj}

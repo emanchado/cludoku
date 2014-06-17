@@ -10,3 +10,5 @@ pom.xml
 .lein-plugins
 sudoku-*.html
 .lein-repl-history
+public/js/cljs.js
+public/js/out/
