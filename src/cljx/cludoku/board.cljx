@@ -1,4 +1,6 @@
-(ns cludoku.board)
+(ns cludoku.board
+  #+cljs (:require [cljs.reader :refer [read-string]]
+                   clojure.string))
 
 (defrecord Board [block-width block-height cells])
 
@@ -188,6 +190,25 @@
       (zero? number-unknowns))
     (throw (#+clj IllegalStateException. #+cljs js/Error
                   "Inconsistent board!"))))
+
+(defn import-board [board-string]
+  "Returns a new board from the given string. The format of the string
+   must be a first line with two space-separated numbers indicating
+   the width and height of the block, and the rest of the lines must
+   be a space-separated contents of each successive row. Each cell
+   contents must be either a number or an underscore."
+  (let [lines (clojure.string/split-lines board-string)
+        dimesions-spec (map read-string
+                            (clojure.string/split (first lines) #" "))
+        rows-spec (rest lines)]
+    {:block-width (first dimesions-spec)
+     :block-height (second dimesions-spec)
+     :cells (mapv (fn [line]
+                    (mapv (fn [cell]
+                            (let [number (read-string cell)]
+                              (if (number? number) number nil)))
+                          (clojure.string/split line #" ")))
+                  rows-spec)}))
 
 (defn export-board [board]
   "Returns a proto-board of the given board. Useful to eg. print an

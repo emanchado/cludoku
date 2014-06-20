@@ -23,28 +23,10 @@
                      :final-step (get options :final-step false)
                      :rule (get options :rule)})))
 
-(defn import-board [filename]
-  "Returns a new board read from the given filename. The format of the
-   file must be a first line with two space-separated numbers
-   indicating the width and height of the block, and the rest of the
-   lines must be a space-separated contents of each successive
-   row. Each cell contents must be either a number or an underscore."
-  (let [lines (clojure.string/split-lines (slurp filename))
-        dimesions-spec (map read-string
-                            (clojure.string/split (first lines) #" "))
-        rows-spec (rest lines)]
-    {:block-width (first dimesions-spec)
-     :block-height (second dimesions-spec)
-     :cells (mapv (fn [line]
-                    (mapv (fn [cell]
-                            (let [number (read-string cell)]
-                              (if (number? number) number nil)))
-                          (clojure.string/split line #" ")))
-                  rows-spec)}))
 
 (defn -main
   [& args]
-  (let [b (import-board (first args))
+  (let [b (import-board (slurp (first args)))
         initial-board (create-board b)
         step-count (atom 1)]
     (with-open [w (clojure.java.io/writer (str "sudoku-0.html"))]
