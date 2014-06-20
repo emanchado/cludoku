@@ -1,38 +1,21 @@
 (ns cludoku.core
-  (:require [cludoku.board :refer [create-board update-board dim solved?]]
+  (:require [cludoku.board :refer [create-board update-board dim solved?
+                                   import-board]]
             [cludoku.solver :as solver]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]))
 
 (enable-console-print!)
 
-(def easy-imported-board
-  {:block-width 3
-   :block-height 3
-   :cells [[nil nil nil  1  nil  5  nil  6   8 ]
-           [nil nil nil nil nil nil  7  nil  1 ]
-           [ 9  nil  1  nil nil nil nil  3  nil]
-           [nil nil  7  nil  2   6  nil nil nil]
-           [ 5  nil nil nil nil nil nil nil  3 ]
-           [nil nil nil  8   7  nil  4  nil nil]
-           [nil  3  nil nil nil nil  8  nil  5 ]
-           [ 1  nil  5  nil nil nil nil nil nil]
-           [ 7   9  nil  4  nil  1  nil nil nil]]})
-(def medium-imported-board
-  {:block-width 3
-   :block-height 3
-   :cells [[ 2  nil nil nil  8  nil  7  nil  1 ]
-           [nil  5  nil nil nil nil nil nil nil]
-           [nil nil  6  nil nil nil  2  nil  4 ]
-           [ 7  nil nil  1   2  nil nil nil nil]
-           [nil  2  nil  5  nil  6  nil  3  nil]
-           [nil nil nil nil  3   9  nil nil  8 ]
-           [ 8  nil  2  nil nil nil  9  nil nil]
-           [nil nil nil nil nil nil nil  6  nil]
-           [ 3  nil  4  nil  1  nil nil nil  2 ]]})
-(def app-state (atom {:states [{:board (create-board medium-imported-board)
-                                :applied-rule nil}]
-                      :current-state 0}))
+(def default-board "3 3\n2 _ _ _ 8 _ 7 _ 1\n_ 5 _ _ _ _ _ _ _\n_ _ 6 _ _ _ 2 _ 4\n7 _ _ 1 2 _ _ _ _\n_ 2 _ 5 _ 6 _ 3 _\n_ _ _ _ 3 9 _ _ 8\n8 _ 2 _ _ _ 9 _ _\n_ _ _ _ _ _ _ 6 _\n3 _ 4 _ 1 _ _ _ 2")
+(def app-state (atom {}))
+
+(defn reset-game [board-str]
+  (reset! app-state {:states [{:board (create-board (import-board board-str))
+                               :applied-rule nil}]
+                     :current-state 0}))
+
+(reset-game default-board)
 
 (defn sudoku-cell-view [candidate-set owner]
   (reify

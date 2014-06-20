@@ -7,7 +7,20 @@
     <div id="sudoku-board"></div>
     <div id="sudoku-controls"></div>
     <div id="sudoku-rule-info"></div>
+    <div id="sudoku-name"></div>
+    <input type="file" id="sudoku-file" />
 
+    <script type="text/javascript">
+      document.getElementById("sudoku-file").addEventListener("change", function(evt) {
+          var file = evt.target.files[0];
+          document.getElementById('sudoku-name').textContent = file.name;
+          var reader = new FileReader();
+          reader.onload = function(evt) {
+              cludoku.core.reset_game(evt.target.result);
+          };
+          reader.readAsText(file);
+      }, false);
+    </script>
     <script src="js/react-0.9.0.js"></script>
     <script src="js/out/goog/base.js" type="text/javascript"></script>
     <script src="js/cljs.js" type="text/javascript"></script>
