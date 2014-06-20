@@ -65,33 +65,43 @@
                                   board-range)))
                     board-range))))))
 
+(defn prev-step [app]
+  (if (> (:current-state app) 0)
+    (update-in app [:current-state] dec)
+    app))
+
 (defn next-step [app]
   (let [states (:states app)
-        current-board (:board (get states (:current-state app)))]
-    (loop [pending-rules solver/rules]
-      (let [{rule-name :name rule-function :function} (first pending-rules)
-            update (rule-function current-board)
-            updated-board (update-board current-board update)]
-        (if (not= current-board updated-board)
-          (update-in app [:states] #(conj % {:board updated-board
-                                             :applied-updated update
-                                             :applied-rule rule-name}))
-          (if (> (count pending-rules) 1)
-            (recur (rest pending-rules))
-            app))))))
+        current-state (:current-state app)
+        last-state (-> states count dec)
+        current-board (:board (get states current-state))]
+    (if (< current-state last-state)
+      (update-in app [:current-state] inc)
+      (if (:finished? app)
+        app
+        (loop [pending-rules solver/rules]
+          (let [{rule-name :name rule-function :function} (first pending-rules)
+                update (rule-function current-board)
+                updated-board (update-board current-board update)]
+            (if (not= current-board updated-board)
+              (update-in (update-in app [:current-state] inc)
+                         [:states]
+                         #(conj % {:board updated-board
+                                   :applied-updated update
+                                   :applied-rule rule-name}))
+              (if (> (count pending-rules) 1)
+                (recur (rest pending-rules))
+                (assoc app :finished? true)))))))))
 
 (defn sudoku-controls-view [app owner]
   (reify
     om/IRender
     (render [_]
       (dom/div nil
-               (dom/button #js {:onClick (fn [e]
-                                           (let [number-states (-> @app :states count)]
-                                             (om/transact! app next-step)
-                                             (when (> (-> @app :states count)
-                                                      number-states)
-                                               (om/transact! app :current-state inc))))}
-                           "Next step")))))
+               (dom/button #js {:onClick (fn [e] (om/transact! app next-step))}
+                           "Next step")
+               (dom/button #js {:onClick (fn [e] (om/transact! app prev-step))}
+                           "Previous step")))))
 
 (om/root sudoku-board-view app-state
   {:target (. js/document (getElementById "sudoku-board"))})
