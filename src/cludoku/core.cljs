@@ -110,8 +110,19 @@
                                 :disabled (zero? (:current-state app))}
                            "Previous step")))))
 
+(defn sudoku-rule-info-view [app owner]
+  (reify
+    om/IRender
+    (render [_]
+      (let [current-state (:current-state app)
+            current-rule (get-in app [:states current-state :applied-rule])]
+        (dom/div nil current-rule)))))
+
 (om/root sudoku-board-view app-state
   {:target (. js/document (getElementById "sudoku-board"))})
 
 (om/root sudoku-controls-view app-state
   {:target (. js/document (getElementById "sudoku-controls"))})
+
+(om/root sudoku-rule-info-view app-state
+  {:target (. js/document (getElementById "sudoku-rule-info"))})
