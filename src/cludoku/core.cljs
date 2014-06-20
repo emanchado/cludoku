@@ -1,5 +1,5 @@
 (ns cludoku.core
-  (:require [cludoku.board :refer [create-board update-board dim]]
+  (:require [cludoku.board :refer [create-board update-board dim solved?]]
             [cludoku.solver :as solver]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]))
@@ -84,11 +84,13 @@
                 update (rule-function current-board)
                 updated-board (update-board current-board update)]
             (if (not= current-board updated-board)
-              (update-in (update-in app [:current-state] inc)
-                         [:states]
-                         #(conj % {:board updated-board
-                                   :applied-updated update
-                                   :applied-rule rule-name}))
+              (-> app
+                  (update-in [:current-state] inc)
+                  (assoc-in  [:finished?] (solved? updated-board))
+                  (update-in [:states]
+                             #(conj % {:board updated-board
+                                       :applied-updated update
+                                       :applied-rule rule-name})))
               (if (> (count pending-rules) 1)
                 (recur (rest pending-rules))
                 (assoc app :finished? true)))))))))
@@ -98,9 +100,14 @@
     om/IRender
     (render [_]
       (dom/div nil
-               (dom/button #js {:onClick (fn [e] (om/transact! app next-step))}
+               (dom/button #js {:onClick (fn [e] (om/transact! app next-step))
+                                :disabled (if (and (:finished? app)
+                                                   (= (-> app :states count dec)
+                                                      (-> app :current-state)))
+                                            "disabled")}
                            "Next step")
-               (dom/button #js {:onClick (fn [e] (om/transact! app prev-step))}
+               (dom/button #js {:onClick (fn [e] (om/transact! app prev-step))
+                                :disabled (zero? (:current-state app))}
                            "Previous step")))))
 
 (om/root sudoku-board-view app-state
