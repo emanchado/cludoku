@@ -80,7 +80,6 @@
             (if (not= current-board updated-board)
               (-> app
                   (update-in [:current-state] inc)
-                  (assoc-in  [:finished?] (solved? updated-board))
                   (update-in [:states]
                              #(conj % {:board current-board
                                        :applied-updates update
@@ -88,10 +87,15 @@
                   (update-in [:states]
                              #(conj % {:board updated-board
                                        :applied-updates #{}
-                                       :applied-rule "Cleanup"})))
+                                       :applied-rule "Cleanup"
+                                       :solved? (solved? updated-board)
+                                       :finished? (solved? updated-board)})))
               (if (> (count pending-rules) 1)
                 (recur (rest pending-rules))
-                (assoc app :finished? true)))))))))
+                (-> app
+                    (assoc-in [:states (:current-state app) :finished?] true)
+                    (assoc-in [:states (:current-state app) :solved?]
+                              (solved? current-board)))))))))))
 
 (defn sudoku-controls-view [app owner]
   (reify
@@ -100,9 +104,7 @@
       (dom/div nil
                (dom/button #js {:accessKey "n"
                                 :onClick (fn [e] (om/transact! app next-step))
-                                :disabled (if (and (:finished? app)
-                                                   (= (-> app :states count dec)
-                                                      (-> app :current-state)))
+                                :disabled (if (get-in app [:states (:current-state app) :finished?])
                                             "disabled")}
                            "Next step")
                (dom/button #js {:accessKey "p"
@@ -122,8 +124,8 @@
                  (dom/h2 #js {:className "board-name"} board-name)
                  (dom/span #js {:className "last-change"}
                            (cond
-                            (and (:finished? app)
-                                 (= current-state last-state)) "Finished."
+                            (get-in app [:states (:current-state app) :solved?]) "Solved!"
+                            (get-in app [:states (:current-state app) :finished?]) "Could not solve sudoku."
                             (= current-state 0) "<Initial state>"
                             :else (str "Applied \"" current-rule "\"."))))))))
 
