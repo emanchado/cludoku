@@ -4,10 +4,17 @@
     <link rel="stylesheet" href="css/main.css" type="text/css" />
   </head>
   <body>
-    <div id="sudoku-info"></div>
-    <div id="sudoku-board"></div>
-    <div id="sudoku-controls"></div>
-    <input type="file" id="sudoku-file" />
+    <div id="container">
+      <div class="side-panel">
+        <div id="sudoku-info"></div>
+        <div id="sudoku-controls"></div>
+        <div id="sudoku-loader">
+          <h3>Load another sudoku</h3>
+          <input type="file" id="sudoku-file" />
+        </div>
+      </div>
+      <div id="sudoku-board"></div>
+    </div>
 
     <script type="text/javascript">
       document.getElementById("sudoku-file").addEventListener("change", function(evt) {

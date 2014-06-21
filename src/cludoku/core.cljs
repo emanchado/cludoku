@@ -13,7 +13,7 @@
 (defn reset-game [board-name board-str]
   (reset! app-state {:name board-name
                      :states [{:board (create-board (import-board board-str))
-                               :applied-rule nil}]
+                               :applied-rule "<Initial state>"}]
                      :current-state 0}))
 
 (reset-game "*default*" default-board)
@@ -84,13 +84,15 @@
     om/IRender
     (render [_]
       (dom/div nil
-               (dom/button #js {:onClick (fn [e] (om/transact! app next-step))
+               (dom/button #js {:accessKey "n"
+                                :onClick (fn [e] (om/transact! app next-step))
                                 :disabled (if (and (:finished? app)
                                                    (= (-> app :states count dec)
                                                       (-> app :current-state)))
                                             "disabled")}
                            "Next step")
-               (dom/button #js {:onClick (fn [e] (om/transact! app prev-step))
+               (dom/button #js {:accessKey "p"
+                                :onClick (fn [e] (om/transact! app prev-step))
                                 :disabled (zero? (:current-state app))}
                            "Previous step")))))
 
@@ -102,7 +104,7 @@
             current-state (:current-state app)
             current-rule (get-in app [:states current-state :applied-rule])]
         (dom/div nil
-                 (dom/span #js {:className "board-name"} board-name)
+                 (dom/h2 #js {:className "board-name"} board-name)
                  (dom/span #js {:className "applied-rule"} current-rule))))))
 
 (om/root sudoku-board-view app-state
