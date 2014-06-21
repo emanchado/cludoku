@@ -12,7 +12,6 @@
     <script type="text/javascript">
       document.getElementById("sudoku-file").addEventListener("change", function(evt) {
           var file = evt.target.files[0];
-          document.getElementById('sudoku-name').textContent = file.name;
           var reader = new FileReader();
           reader.onload = function(evt) {
               cludoku.core.reset_game(file.name, evt.target.result);
