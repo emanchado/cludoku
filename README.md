@@ -15,9 +15,9 @@ To run the JVM version, simply type:
 
 ## Running cludoku (web version)
 
-Note that the web version is work in progress and right now only
-solves a hardcoded sudoku, doesn't allow going back, and it's very
-slow.
+Note that the web version is work in progress. It's kind of slow, it
+needs design work and it doesn't mark yet which cells and candidates
+have changed recently.
 
 If you're still curious to run it, compile it first by typing:
 
