@@ -10,12 +10,13 @@
 (def default-board "3 3\n2 _ _ _ 8 _ 7 _ 1\n_ 5 _ _ _ _ _ _ _\n_ _ 6 _ _ _ 2 _ 4\n7 _ _ 1 2 _ _ _ _\n_ 2 _ 5 _ 6 _ 3 _\n_ _ _ _ 3 9 _ _ 8\n8 _ 2 _ _ _ 9 _ _\n_ _ _ _ _ _ _ 6 _\n3 _ 4 _ 1 _ _ _ 2")
 (def app-state (atom {}))
 
-(defn reset-game [board-str]
-  (reset! app-state {:states [{:board (create-board (import-board board-str))
+(defn reset-game [board-name board-str]
+  (reset! app-state {:name board-name
+                     :states [{:board (create-board (import-board board-str))
                                :applied-rule nil}]
                      :current-state 0}))
 
-(reset-game default-board)
+(reset-game "*default*" default-board)
 
 (defn sudoku-cell-view [candidate-set owner]
   (reify
@@ -93,13 +94,16 @@
                                 :disabled (zero? (:current-state app))}
                            "Previous step")))))
 
-(defn sudoku-rule-info-view [app owner]
+(defn sudoku-info-view [app owner]
   (reify
     om/IRender
     (render [_]
-      (let [current-state (:current-state app)
+      (let [board-name (:name app)
+            current-state (:current-state app)
             current-rule (get-in app [:states current-state :applied-rule])]
-        (dom/div nil current-rule)))))
+        (dom/div nil
+                 (dom/span #js {:className "board-name"} board-name)
+                 (dom/span #js {:className "applied-rule"} current-rule))))))
 
 (om/root sudoku-board-view app-state
   {:target (. js/document (getElementById "sudoku-board"))})
@@ -107,5 +111,5 @@
 (om/root sudoku-controls-view app-state
   {:target (. js/document (getElementById "sudoku-controls"))})
 
-(om/root sudoku-rule-info-view app-state
-  {:target (. js/document (getElementById "sudoku-rule-info"))})
+(om/root sudoku-info-view app-state
+  {:target (. js/document (getElementById "sudoku-info"))})

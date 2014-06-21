@@ -1,3 +1,7 @@
+.sudoku-info {
+    float: right;
+}
+
 .sudoku-board {
     border-collapse: collapse;
 }

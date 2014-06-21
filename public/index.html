@@ -4,10 +4,9 @@
     <link rel="stylesheet" href="css/main.css" type="text/css" />
   </head>
   <body>
+    <div id="sudoku-info"></div>
     <div id="sudoku-board"></div>
     <div id="sudoku-controls"></div>
-    <div id="sudoku-rule-info"></div>
-    <div id="sudoku-name"></div>
     <input type="file" id="sudoku-file" />
 
     <script type="text/javascript">
@@ -16,7 +15,7 @@
           document.getElementById('sudoku-name').textContent = file.name;
           var reader = new FileReader();
           reader.onload = function(evt) {
-              cludoku.core.reset_game(evt.target.result);
+              cludoku.core.reset_game(file.name, evt.target.result);
           };
           reader.readAsText(file);
       }, false);
