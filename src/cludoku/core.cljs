@@ -18,34 +18,44 @@
 
 (reset-game "*default*" default-board)
 
-(defn sudoku-cell-view [candidate-set owner]
+(defn sudoku-cell-view [{:keys [cands update]} owner]
   (reify
     om/IRender
     (render [this]
       (apply dom/div #js {:className "sudoku-cell"}
-             (if (= 1 (count candidate-set))
+             (if (= 1 (count cands))
                (list (dom/span #js {:className "sudoku-number"}
-                               (first candidate-set)))
+                               (first cands)))
                (map (fn [c]
-                      (dom/div #js {:className (str "sudoku-candidate "
-                                                    "sudoku-candidate-" c)}
-                               c))
-                    candidate-set))))))
+                      (let [extra-class (if (and update
+                                                 (not (contains? update c)))
+                                          " sudoku-candidate-dropped"
+                                          "")]
+                        (dom/div #js {:className (str "sudoku-candidate "
+                                                      "sudoku-candidate-" c
+                                                      extra-class)}
+                                 c)))
+                    cands))))))
 
 (defn sudoku-board-view [app owner]
   (reify
     om/IRender
     (render [this]
-      (let [board (:board (nth (:states app)
-                               (:current-state app)))
+      (let [state (nth (:states app)
+                       (:current-state app))
+            board (:board state)
+            updates (:applied-updates state)
             cell-map (:cells board)
             board-range (range (dim board))]
         (apply dom/div #js {:className "sudoku-board"}
                (map (fn [row-n]
                       (apply dom/div #js {:className "sudoku-row"}
                              (map (fn [col-n]
-                                    (om/build sudoku-cell-view
-                                              (get cell-map [row-n col-n])))
+                                    (let [coords [row-n col-n]]
+                                      (om/build sudoku-cell-view
+                                                {:cands (get cell-map coords)
+                                                 :update (get updates
+                                                              coords)})))
                                   board-range)))
                     board-range))))))
 
@@ -72,9 +82,13 @@
                   (update-in [:current-state] inc)
                   (assoc-in  [:finished?] (solved? updated-board))
                   (update-in [:states]
+                             #(conj % {:board current-board
+                                       :applied-updates update
+                                       :applied-rule rule-name}))
+                  (update-in [:states]
                              #(conj % {:board updated-board
-                                       :applied-updated update
-                                       :applied-rule rule-name})))
+                                       :applied-updates #{}
+                                       :applied-rule "Cleanup"})))
               (if (> (count pending-rules) 1)
                 (recur (rest pending-rules))
                 (assoc app :finished? true)))))))))
@@ -102,10 +116,16 @@
     (render [_]
       (let [board-name (:name app)
             current-state (:current-state app)
+            last-state (-> app :states count dec)
             current-rule (get-in app [:states current-state :applied-rule])]
         (dom/div nil
                  (dom/h2 #js {:className "board-name"} board-name)
-                 (dom/span #js {:className "applied-rule"} current-rule))))))
+                 (dom/span #js {:className "last-change"}
+                           (cond
+                            (and (:finished? app)
+                                 (= current-state last-state)) "Finished."
+                            (= current-state 0) "<Initial state>"
+                            :else (str "Applied \"" current-rule "\"."))))))))
 
 (om/root sudoku-board-view app-state
   {:target (. js/document (getElementById "sudoku-board"))})
