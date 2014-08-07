@@ -33,7 +33,7 @@
 
 (deftest board-import-export
   (testing "Can import a simple board definition"
-    (is (= (import-board "test/fixtures/simple.board")
+    (is (= (import-board (slurp "test/fixtures/simple.board"))
            {:block-height 2
             :block-width 2
             :cells [[nil 1 2 3]
@@ -42,7 +42,7 @@
                     [nil nil nil 2]]})))
 
   (testing "Can import a solved board definition"
-    (is (= (import-board "test/fixtures/solved.board")
+    (is (= (import-board (slurp "test/fixtures/solved.board"))
            {:block-height 2
             :block-width 2
             :cells [[4 1 2 3]
@@ -51,7 +51,7 @@
                     [3 4 1 2]]})))
 
   (testing "Can import an uneven-block-shape board definition"
-    (is (= (import-board "test/fixtures/uneven.board")
+    (is (= (import-board (slurp "test/fixtures/uneven.board"))
            {:block-height 2
             :block-width 3
             :cells [[nil  6   4   3   2  nil]
