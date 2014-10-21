@@ -102,15 +102,15 @@
     om/IRender
     (render [_]
       (dom/div nil
+               (dom/button #js {:accessKey "p"
+                                :onClick (fn [e] (om/transact! app prev-step))
+                                :disabled (zero? (:current-state app))}
+                           "Previous step")
                (dom/button #js {:accessKey "n"
                                 :onClick (fn [e] (om/transact! app next-step))
                                 :disabled (if (get-in app [:states (:current-state app) :finished?])
                                             "disabled")}
-                           "Next step")
-               (dom/button #js {:accessKey "p"
-                                :onClick (fn [e] (om/transact! app prev-step))
-                                :disabled (zero? (:current-state app))}
-                           "Previous step")))))
+                           "Next step")))))
 
 (defn sudoku-info-view [app owner]
   (reify
