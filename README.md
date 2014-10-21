@@ -15,19 +15,16 @@ To run the JVM version, simply type:
 
 ## Running cludoku (web version)
 
-Note that the web version is work in progress. It's kind of slow, it
-needs design work and it doesn't mark yet which cells and candidates
-have changed recently.
-
-If you're still curious to run it, compile it first by typing:
+To run it, compile it first by typing:
 
     lein cljx once
     lein cljsbuild once
 
-and then open `public/index.html` in your browser of choice.
+and then open `public/index.html` in your browser of choice. Note that
+it's kind of slow and it needs design work.
 
 ## License
 
-Copyright © 2012-2013 Esteban Manchado Velázquez
+Copyright © 2012-2014 Esteban Manchado Velázquez
 
 Distributed under the Eclipse Public License, the same as Clojure.
