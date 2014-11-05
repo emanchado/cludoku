@@ -3553,16 +3553,16 @@ cljs.core.fn_QMARK_ = function(a) {
 };
 cljs.core.with_meta = function with_meta(b, c) {
   return cljs.core.fn_QMARK_.call(null, b) && !(b ? b.cljs$lang$protocol_mask$partition0$ & 262144 || b.cljs$core$IWithMeta$ || (b.cljs$lang$protocol_mask$partition0$ ? 0 : cljs.core.native_satisfies_QMARK_.call(null, cljs.core.IWithMeta, b)) : cljs.core.native_satisfies_QMARK_.call(null, cljs.core.IWithMeta, b)) ? with_meta.call(null, function() {
-    "undefined" === typeof cljs.core.t6930 && (cljs.core.t6930 = function(b, c, f, g) {
+    "undefined" === typeof cljs.core.t6024 && (cljs.core.t6024 = function(b, c, f, g) {
       this.meta = b;
       this.o = c;
       this.with_meta = f;
-      this.meta6931 = g;
+      this.meta6025 = g;
       this.cljs$lang$protocol_mask$partition1$ = 0;
       this.cljs$lang$protocol_mask$partition0$ = 393217;
-    }, cljs.core.t6930.cljs$lang$type = !0, cljs.core.t6930.cljs$lang$ctorStr = "cljs.core/t6930", cljs.core.t6930.cljs$lang$ctorPrWriter = function(b, c, f) {
-      return cljs.core._write.call(null, c, "cljs.core/t6930");
-    }, cljs.core.t6930.prototype.call = function() {
+    }, cljs.core.t6024.cljs$lang$type = !0, cljs.core.t6024.cljs$lang$ctorStr = "cljs.core/t6024", cljs.core.t6024.cljs$lang$ctorPrWriter = function(b, c, f) {
+      return cljs.core._write.call(null, c, "cljs.core/t6024");
+    }, cljs.core.t6024.prototype.call = function() {
       var b = function(b, c) {
         return cljs.core.apply.call(null, b.o, c);
       }, c = function(c, e) {
@@ -3579,9 +3579,9 @@ cljs.core.with_meta = function with_meta(b, c) {
       };
       c.cljs$core$IFn$_invoke$arity$variadic = b;
       return c;
-    }(), cljs.core.t6930.prototype.apply = function(b, c) {
+    }(), cljs.core.t6024.prototype.apply = function(b, c) {
       return this.call.apply(this, [this].concat(cljs.core.aclone.call(null, c)));
-    }, cljs.core.t6930.prototype.cljs$core$IFn$_invoke$arity$2 = function() {
+    }, cljs.core.t6024.prototype.cljs$core$IFn$_invoke$arity$2 = function() {
       var b = function(b) {
         return cljs.core.apply.call(null, self__.o, b);
       }, c = function(c) {
@@ -3596,14 +3596,14 @@ cljs.core.with_meta = function with_meta(b, c) {
       };
       c.cljs$core$IFn$_invoke$arity$variadic = b;
       return c;
-    }(), cljs.core.t6930.prototype.cljs$core$Fn$ = !0, cljs.core.t6930.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
-      return this.meta6931;
-    }, cljs.core.t6930.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
-      return new cljs.core.t6930(this.meta, this.o, this.with_meta, c);
-    }, cljs.core.__GT_t6930 = function(b, c, f, g) {
-      return new cljs.core.t6930(b, c, f, g);
+    }(), cljs.core.t6024.prototype.cljs$core$Fn$ = !0, cljs.core.t6024.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
+      return this.meta6025;
+    }, cljs.core.t6024.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
+      return new cljs.core.t6024(this.meta, this.o, this.with_meta, c);
+    }, cljs.core.__GT_t6024 = function(b, c, f, g) {
+      return new cljs.core.t6024(b, c, f, g);
     });
-    return new cljs.core.t6930(c, b, with_meta, null);
+    return new cljs.core.t6024(c, b, with_meta, null);
   }(), c) : null == b ? null : cljs.core._with_meta.call(null, b, c);
 };
 cljs.core.meta = function(a) {
@@ -18354,19 +18354,19 @@ cludoku.core.reset_game = function(a, b) {
 cludoku.core.reset_game.call(null, "*default*", cludoku.core.default_board);
 cludoku.core.sudoku_cell_view = function sudoku_cell_view(b, c) {
   var d = cljs.core.seq_QMARK_.call(null, b) ? cljs.core.apply.call(null, cljs.core.hash_map, b) : b, e = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "update", "update", 4470025275)), f = cljs.core.get.call(null, d, new cljs.core.Keyword(null, "cands", "cands", 1108331473));
-  "undefined" === typeof cludoku.core.t8099 && (cludoku.core.t8099 = function(b, c, d, e, f, n, p) {
+  "undefined" === typeof cludoku.core.t5706 && (cludoku.core.t5706 = function(b, c, d, e, f, n, p) {
     this.cands = b;
     this.update = c;
-    this.map__8098 = d;
+    this.map__5705 = d;
     this.owner = e;
-    this.p__8093 = f;
+    this.p__5700 = f;
     this.sudoku_cell_view = n;
-    this.meta8100 = p;
+    this.meta5707 = p;
     this.cljs$lang$protocol_mask$partition1$ = 0;
     this.cljs$lang$protocol_mask$partition0$ = 393216;
-  }, cludoku.core.t8099.cljs$lang$type = !0, cludoku.core.t8099.cljs$lang$ctorStr = "cludoku.core/t8099", cludoku.core.t8099.cljs$lang$ctorPrWriter = function(b, c, d) {
-    return cljs.core._write.call(null, c, "cludoku.core/t8099");
-  }, cludoku.core.t8099.prototype.om$core$IRender$ = !0, cludoku.core.t8099.prototype.om$core$IRender$render$arity$1 = function(b) {
+  }, cludoku.core.t5706.cljs$lang$type = !0, cludoku.core.t5706.cljs$lang$ctorStr = "cludoku.core/t5706", cludoku.core.t5706.cljs$lang$ctorPrWriter = function(b, c, d) {
+    return cljs.core._write.call(null, c, "cludoku.core/t5706");
+  }, cludoku.core.t5706.prototype.om$core$IRender$ = !0, cludoku.core.t5706.prototype.om$core$IRender$render$arity$1 = function(b) {
     var c = this;
     return cljs.core.apply.call(null, om.dom.div, {className:"sudoku-cell"}, cljs.core._EQ_.call(null, 1, cljs.core.count.call(null, c.cands)) ? cljs.core._conj.call(null, cljs.core.List.EMPTY, React.DOM.span({className:"sudoku-number"}, cljs.core.first.call(null, c.cands))) : cljs.core.map.call(null, function(b) {
       var d = cljs.core.truth_(function() {
@@ -18375,26 +18375,26 @@ cludoku.core.sudoku_cell_view = function sudoku_cell_view(b, c) {
       }()) ? " sudoku-candidate-dropped" : "";
       return React.DOM.div({className:[cljs.core.str("sudoku-candidate "), cljs.core.str("sudoku-candidate-"), cljs.core.str(b), cljs.core.str(d)].join("")}, b);
     }, c.cands));
-  }, cludoku.core.t8099.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
-    return this.meta8100;
-  }, cludoku.core.t8099.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
-    return new cludoku.core.t8099(this.cands, this.update, this.map__8098, this.owner, this.p__8093, this.sudoku_cell_view, c);
-  }, cludoku.core.__GT_t8099 = function(b, c, d, e, f, n, p) {
-    return new cludoku.core.t8099(b, c, d, e, f, n, p);
+  }, cludoku.core.t5706.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
+    return this.meta5707;
+  }, cludoku.core.t5706.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
+    return new cludoku.core.t5706(this.cands, this.update, this.map__5705, this.owner, this.p__5700, this.sudoku_cell_view, c);
+  }, cludoku.core.__GT_t5706 = function(b, c, d, e, f, n, p) {
+    return new cludoku.core.t5706(b, c, d, e, f, n, p);
   });
-  return new cludoku.core.t8099(f, e, d, c, b, sudoku_cell_view, null);
+  return new cludoku.core.t5706(f, e, d, c, b, sudoku_cell_view, null);
 };
 cludoku.core.sudoku_board_view = function sudoku_board_view(b, c) {
-  "undefined" === typeof cludoku.core.t8105 && (cludoku.core.t8105 = function(b, c, f, g) {
+  "undefined" === typeof cludoku.core.t5712 && (cludoku.core.t5712 = function(b, c, f, g) {
     this.owner = b;
     this.app = c;
     this.sudoku_board_view = f;
-    this.meta8106 = g;
+    this.meta5713 = g;
     this.cljs$lang$protocol_mask$partition1$ = 0;
     this.cljs$lang$protocol_mask$partition0$ = 393216;
-  }, cludoku.core.t8105.cljs$lang$type = !0, cludoku.core.t8105.cljs$lang$ctorStr = "cludoku.core/t8105", cludoku.core.t8105.cljs$lang$ctorPrWriter = function(b, c, f) {
-    return cljs.core._write.call(null, c, "cludoku.core/t8105");
-  }, cludoku.core.t8105.prototype.om$core$IRender$ = !0, cludoku.core.t8105.prototype.om$core$IRender$render$arity$1 = function(b) {
+  }, cludoku.core.t5712.cljs$lang$type = !0, cludoku.core.t5712.cljs$lang$ctorStr = "cludoku.core/t5712", cludoku.core.t5712.cljs$lang$ctorPrWriter = function(b, c, f) {
+    return cljs.core._write.call(null, c, "cludoku.core/t5712");
+  }, cludoku.core.t5712.prototype.om$core$IRender$ = !0, cludoku.core.t5712.prototype.om$core$IRender$render$arity$1 = function(b) {
     b = cljs.core.nth.call(null, (new cljs.core.Keyword(null, "states", "states", 4416389492)).cljs$core$IFn$_invoke$arity$1(this.app), (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(this.app));
     var c = (new cljs.core.Keyword(null, "board", "board", 1107812952)).cljs$core$IFn$_invoke$arity$1(b), f = (new cljs.core.Keyword(null, "applied-updates", "applied-updates", 1140660972)).cljs$core$IFn$_invoke$arity$1(b), g = (new cljs.core.Keyword(null, "cells", "cells", 1108448963)).cljs$core$IFn$_invoke$arity$1(c), h = cljs.core.range.call(null, cludoku.board.dim.call(null, c));
     return cljs.core.apply.call(null, om.dom.div, {className:"sudoku-board"}, cljs.core.map.call(null, function(b) {
@@ -18403,14 +18403,14 @@ cludoku.core.sudoku_board_view = function sudoku_board_view(b, c) {
         return om.core.build.call(null, cludoku.core.sudoku_cell_view, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "cands", "cands", 1108331473), cljs.core.get.call(null, g, c), new cljs.core.Keyword(null, "update", "update", 4470025275), cljs.core.get.call(null, f, c)], null));
       }, h));
     }, h));
-  }, cludoku.core.t8105.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
-    return this.meta8106;
-  }, cludoku.core.t8105.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
-    return new cludoku.core.t8105(this.owner, this.app, this.sudoku_board_view, c);
-  }, cludoku.core.__GT_t8105 = function(b, c, f, g) {
-    return new cludoku.core.t8105(b, c, f, g);
+  }, cludoku.core.t5712.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
+    return this.meta5713;
+  }, cludoku.core.t5712.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
+    return new cludoku.core.t5712(this.owner, this.app, this.sudoku_board_view, c);
+  }, cludoku.core.__GT_t5712 = function(b, c, f, g) {
+    return new cludoku.core.t5712(b, c, f, g);
   });
-  return new cludoku.core.t8105(c, b, sudoku_board_view, null);
+  return new cludoku.core.t5712(c, b, sudoku_board_view, null);
 };
 cludoku.core.prev_step = function(a) {
   return 0 < (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(a) ? cljs.core.update_in.call(null, a, new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)], null), cljs.core.dec) : a;
@@ -18446,42 +18446,42 @@ cludoku.core.next_step = function(a) {
   }
 };
 cludoku.core.sudoku_controls_view = function sudoku_controls_view(b, c) {
-  "undefined" === typeof cludoku.core.t8116 && (cludoku.core.t8116 = function(b, c, f, g) {
+  "undefined" === typeof cludoku.core.t5723 && (cludoku.core.t5723 = function(b, c, f, g) {
     this.owner = b;
     this.app = c;
     this.sudoku_controls_view = f;
-    this.meta8117 = g;
+    this.meta5724 = g;
     this.cljs$lang$protocol_mask$partition1$ = 0;
     this.cljs$lang$protocol_mask$partition0$ = 393216;
-  }, cludoku.core.t8116.cljs$lang$type = !0, cludoku.core.t8116.cljs$lang$ctorStr = "cludoku.core/t8116", cludoku.core.t8116.cljs$lang$ctorPrWriter = function(b, c, f) {
-    return cljs.core._write.call(null, c, "cludoku.core/t8116");
-  }, cludoku.core.t8116.prototype.om$core$IRender$ = !0, cludoku.core.t8116.prototype.om$core$IRender$render$arity$1 = function(b) {
+  }, cludoku.core.t5723.cljs$lang$type = !0, cludoku.core.t5723.cljs$lang$ctorStr = "cludoku.core/t5723", cludoku.core.t5723.cljs$lang$ctorPrWriter = function(b, c, f) {
+    return cljs.core._write.call(null, c, "cludoku.core/t5723");
+  }, cludoku.core.t5723.prototype.om$core$IRender$ = !0, cludoku.core.t5723.prototype.om$core$IRender$render$arity$1 = function(b) {
     var c = this;
-    return React.DOM.div(null, React.DOM.button({disabled:cljs.core.truth_(cljs.core.get_in.call(null, c.app, new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "states", "states", 4416389492), (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(c.app), new cljs.core.Keyword(null, "finished?", "finished?", 1605255551)], null))) ? "disabled" : null, onClick:function(b) {
-      return om.core.transact_BANG_.call(null, c.app, cludoku.core.next_step);
-    }, accessKey:"n"}, "Next step"), React.DOM.button({disabled:0 === (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(c.app), onClick:function(b) {
+    return React.DOM.div(null, React.DOM.button({disabled:0 === (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(c.app), onClick:function(b) {
       return om.core.transact_BANG_.call(null, c.app, cludoku.core.prev_step);
-    }, accessKey:"p"}, "Previous step"));
-  }, cludoku.core.t8116.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
-    return this.meta8117;
-  }, cludoku.core.t8116.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
-    return new cludoku.core.t8116(this.owner, this.app, this.sudoku_controls_view, c);
-  }, cludoku.core.__GT_t8116 = function(b, c, f, g) {
-    return new cludoku.core.t8116(b, c, f, g);
+    }, accessKey:"p"}, "Previous step"), React.DOM.button({disabled:cljs.core.truth_(cljs.core.get_in.call(null, c.app, new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "states", "states", 4416389492), (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(c.app), new cljs.core.Keyword(null, "finished?", "finished?", 1605255551)], null))) ? "disabled" : null, onClick:function(b) {
+      return om.core.transact_BANG_.call(null, c.app, cludoku.core.next_step);
+    }, accessKey:"n"}, "Next step"));
+  }, cludoku.core.t5723.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
+    return this.meta5724;
+  }, cludoku.core.t5723.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
+    return new cludoku.core.t5723(this.owner, this.app, this.sudoku_controls_view, c);
+  }, cludoku.core.__GT_t5723 = function(b, c, f, g) {
+    return new cludoku.core.t5723(b, c, f, g);
   });
-  return new cludoku.core.t8116(c, b, sudoku_controls_view, null);
+  return new cludoku.core.t5723(c, b, sudoku_controls_view, null);
 };
 cludoku.core.sudoku_info_view = function sudoku_info_view(b, c) {
-  "undefined" === typeof cludoku.core.t8122 && (cludoku.core.t8122 = function(b, c, f, g) {
+  "undefined" === typeof cludoku.core.t5729 && (cludoku.core.t5729 = function(b, c, f, g) {
     this.owner = b;
     this.app = c;
     this.sudoku_info_view = f;
-    this.meta8123 = g;
+    this.meta5730 = g;
     this.cljs$lang$protocol_mask$partition1$ = 0;
     this.cljs$lang$protocol_mask$partition0$ = 393216;
-  }, cludoku.core.t8122.cljs$lang$type = !0, cludoku.core.t8122.cljs$lang$ctorStr = "cludoku.core/t8122", cludoku.core.t8122.cljs$lang$ctorPrWriter = function(b, c, f) {
-    return cljs.core._write.call(null, c, "cludoku.core/t8122");
-  }, cludoku.core.t8122.prototype.om$core$IRender$ = !0, cludoku.core.t8122.prototype.om$core$IRender$render$arity$1 = function(b) {
+  }, cludoku.core.t5729.cljs$lang$type = !0, cludoku.core.t5729.cljs$lang$ctorStr = "cludoku.core/t5729", cludoku.core.t5729.cljs$lang$ctorPrWriter = function(b, c, f) {
+    return cljs.core._write.call(null, c, "cludoku.core/t5729");
+  }, cludoku.core.t5729.prototype.om$core$IRender$ = !0, cludoku.core.t5729.prototype.om$core$IRender$render$arity$1 = function(b) {
     b = (new cljs.core.Keyword(null, "name", "name", 1017277949)).cljs$core$IFn$_invoke$arity$1(this.app);
     var c = (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(this.app);
     cljs.core.count.call(null, (new cljs.core.Keyword(null, "states", "states", 4416389492)).cljs$core$IFn$_invoke$arity$1(this.app));
@@ -18489,14 +18489,14 @@ cludoku.core.sudoku_info_view = function sudoku_info_view(b, c) {
     return React.DOM.div(null, React.DOM.h2({className:"board-name"}, b), React.DOM.span({className:"last-change"}, cljs.core.truth_(cljs.core.get_in.call(null, this.app, new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "states", "states", 4416389492), (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(this.app), new cljs.core.Keyword(null, "solved?", "solved?", 3278804044)], null))) ? 
     "Solved!" : cljs.core.truth_(cljs.core.get_in.call(null, this.app, new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "states", "states", 4416389492), (new cljs.core.Keyword(null, "current-state", "current-state", 2168441519)).cljs$core$IFn$_invoke$arity$1(this.app), new cljs.core.Keyword(null, "finished?", "finished?", 1605255551)], null))) ? "Could not solve sudoku." : cljs.core._EQ_.call(null, c, 0) ? "\x3cInitial state\x3e" : new cljs.core.Keyword(null, 
     "else", "else", 1017020587) ? [cljs.core.str('Applied "'), cljs.core.str(f), cljs.core.str('".')].join("") : null));
-  }, cludoku.core.t8122.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
-    return this.meta8123;
-  }, cludoku.core.t8122.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
-    return new cludoku.core.t8122(this.owner, this.app, this.sudoku_info_view, c);
-  }, cludoku.core.__GT_t8122 = function(b, c, f, g) {
-    return new cludoku.core.t8122(b, c, f, g);
+  }, cludoku.core.t5729.prototype.cljs$core$IMeta$_meta$arity$1 = function(b) {
+    return this.meta5730;
+  }, cludoku.core.t5729.prototype.cljs$core$IWithMeta$_with_meta$arity$2 = function(b, c) {
+    return new cludoku.core.t5729(this.owner, this.app, this.sudoku_info_view, c);
+  }, cludoku.core.__GT_t5729 = function(b, c, f, g) {
+    return new cludoku.core.t5729(b, c, f, g);
   });
-  return new cludoku.core.t8122(c, b, sudoku_info_view, null);
+  return new cludoku.core.t5729(c, b, sudoku_info_view, null);
 };
 om.core.root.call(null, cludoku.core.sudoku_board_view, cludoku.core.app_state, new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "target", "target", 4427965699), document.getElementById("sudoku-board")], null));
 om.core.root.call(null, cludoku.core.sudoku_controls_view, cludoku.core.app_state, new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "target", "target", 4427965699), document.getElementById("sudoku-controls")], null));
