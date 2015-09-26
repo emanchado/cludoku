@@ -11,6 +11,29 @@
         <div id="sudoku-loader">
           <h3>Load another sudoku</h3>
           <input type="file" id="sudoku-file" />
+
+          <div class="example-container">
+            <a href="#" id="toggle-format-example">Toggle format example</a>
+
+            <div id="format-example" style="display: none">
+              <pre>
+3 3
+2 _ _ _ 8 _ 7 _ 1
+_ 5 _ _ _ _ _ _ _
+_ _ 6 _ _ _ 2 _ 4
+7 _ _ 1 2 _ _ _ _
+_ 2 _ 5 _ 6 _ 3 _
+_ _ _ _ 3 9 _ _ 8
+8 _ 2 _ _ _ 9 _ _
+_ _ _ _ _ _ _ 6 _
+3 _ 4 _ 1 _ _ _ 2
+              </pre>
+
+              <em>The first line has width and height of the sudoku
+                regions. The rest of the lines are each row in the
+                sudoku, with numbers, or underscores for blanks.</em>
+            </div>
+          </div>
         </div>
       </div>
       <div id="sudoku-board"></div>
@@ -25,6 +48,15 @@
           };
           reader.readAsText(file);
       }, false);
+
+      document.getElementById("toggle-format-example").addEventListener("click", function(e) {
+          var exampleEl = document.getElementById("format-example");
+          if (exampleEl.style.display === 'none') {
+              exampleEl.style.display = '';
+          } else {
+              exampleEl.style.display = 'none';
+          }
+      });
     </script>
     <script src="js/react-0.9.0.js"></script>
     <script src="js/out/goog/base.js" type="text/javascript"></script>
