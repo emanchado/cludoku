@@ -7,6 +7,10 @@ It has a simple command-line interface that runs on the JVM (and
 outputs HTML files with the different steps) and a web interface
 that runs on the browser, written in ClojureScript with React/Om.
 
+You can access the web interface at:
+
+   http://emanchado.github.io/cludoku/
+
 ## Running cludoku (command-line version)
 
 To run the JVM version, simply type:
